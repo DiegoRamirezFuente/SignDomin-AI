@@ -1,0 +1,7 @@
+﻿  Domino.cpp
+  Ficha.cpp
+  Jugador.cpp
+  Tablero.cpp
+  Generando código...
+D:\Sergio\UNIVERSIDAD\Máster\Inteligencia Artificial\Trabajo\Domino\Tablero.cpp(87,12): warning C4244: 'argumento': conversión de 'time_t' a 'unsigned int'; posible pérdida de datos
+  Domino.vcxproj -> D:\Sergio\UNIVERSIDAD\Máster\Inteligencia Artificial\Trabajo\Domino\x64\Debug\Domino.exe
