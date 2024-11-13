@@ -280,7 +280,7 @@ void Tablero::dibuja() {
 	// Pintamos el tablero
 	glDisable(GL_LIGHTING);
 	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, getTexture("imagenes/tablero.png").id);
+	glBindTexture(GL_TEXTURE_2D, getTexture("bin/imagenes/tablero.png").id);
 	glDisable(GL_LIGHTING);
 	glBegin(GL_POLYGON);
 	glColor3f(1, 1, 1);
@@ -296,15 +296,15 @@ void Tablero::dibuja() {
 	glDisable(GL_LIGHTING);
 	glEnable(GL_TEXTURE_2D);
 	if (turno == 0) 
-		glBindTexture(GL_TEXTURE_2D, getTexture("imagenes/Turno1.png").id);
+		glBindTexture(GL_TEXTURE_2D, getTexture("bin/imagenes/Turno1.png").id);
 	else if (turno == 1)
-		glBindTexture(GL_TEXTURE_2D, getTexture("imagenes/Turno2.png").id);
+		glBindTexture(GL_TEXTURE_2D, getTexture("bin/imagenes/Turno2.png").id);
 	else if (turno == 2)
-		glBindTexture(GL_TEXTURE_2D, getTexture("imagenes/Turno3.png").id);
+		glBindTexture(GL_TEXTURE_2D, getTexture("bin/imagenes/Turno3.png").id);
 	else if (turno == 3)
-		glBindTexture(GL_TEXTURE_2D, getTexture("imagenes/Turno4.png").id);
+		glBindTexture(GL_TEXTURE_2D, getTexture("bin/imagenes/Turno4.png").id);
 	else
-		glBindTexture(GL_TEXTURE_2D, getTexture("imagenes/negro.png").id);
+		glBindTexture(GL_TEXTURE_2D, getTexture("bin/imagenes/negro.png").id);
 	glDisable(GL_LIGHTING);
 	glBegin(GL_POLYGON);
 	glColor3f(1, 1, 1);
@@ -321,14 +321,14 @@ void Tablero::dibuja() {
 	glEnable(GL_TEXTURE_2D);
 	if (turno == 0) {
 		if (eleccion == 0)
-			glBindTexture(GL_TEXTURE_2D, getTexture("imagenes/Poner-Pasar.png").id);
+			glBindTexture(GL_TEXTURE_2D, getTexture("bin/imagenes/Poner-Pasar.png").id);
 		else if (eleccion_ficha == 0)
-			glBindTexture(GL_TEXTURE_2D, getTexture("imagenes/negro.png").id);
+			glBindTexture(GL_TEXTURE_2D, getTexture("bin/imagenes/negro.png").id);
 		else
-			glBindTexture(GL_TEXTURE_2D, getTexture("imagenes/Izq-Dcha.png").id);
+			glBindTexture(GL_TEXTURE_2D, getTexture("bin/imagenes/Izq-Dcha.png").id);
 	}
 	else
-		glBindTexture(GL_TEXTURE_2D, getTexture("imagenes/negro.png").id);
+		glBindTexture(GL_TEXTURE_2D, getTexture("bin/imagenes/negro.png").id);
 	glDisable(GL_LIGHTING);
 	glBegin(GL_POLYGON);
 	glColor3f(1, 1, 1);

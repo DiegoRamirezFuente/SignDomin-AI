@@ -324,7 +324,7 @@ void Jugador::dibuja(int jugador) {
 			glTexCoord2d(0, 0);		glVertex3f(9 + 2.7 * i, 9.5, 1);
 		}
 		if (jugador == 1) {
-			glBindTexture(GL_TEXTURE_2D, getTexture("imagenes/fichaocultavertical.png").id);
+			glBindTexture(GL_TEXTURE_2D, getTexture("bin/imagenes/fichaocultavertical.png").id);
 			glDisable(GL_LIGHTING);
 			glBegin(GL_POLYGON);
 			glColor3f(1, 1, 1);
@@ -334,7 +334,7 @@ void Jugador::dibuja(int jugador) {
 			glTexCoord2d(0, 0);		glVertex3f(20 - 2.7 * i, 38, 1);
 		}
 		if (jugador == 2) {
-			glBindTexture(GL_TEXTURE_2D, getTexture("imagenes/fichaocultahorizontal.png").id);
+			glBindTexture(GL_TEXTURE_2D, getTexture("bin/imagenes/fichaocultahorizontal.png").id);
 			glDisable(GL_LIGHTING); 
 			glBegin(GL_POLYGON);
 			glColor3f(1, 1, 1);
@@ -344,7 +344,7 @@ void Jugador::dibuja(int jugador) {
 			glTexCoord2d(0, 0);		glVertex3f(-3.5, 26 - 2.3 * i, 1);
 		}
 		if (jugador == 3) {
-			glBindTexture(GL_TEXTURE_2D, getTexture("imagenes/fichaocultahorizontal.png").id);
+			glBindTexture(GL_TEXTURE_2D, getTexture("bin/imagenes/fichaocultahorizontal.png").id);
 			glDisable(GL_LIGHTING);
 			glBegin(GL_POLYGON);
 			glColor3f(1, 1, 1);

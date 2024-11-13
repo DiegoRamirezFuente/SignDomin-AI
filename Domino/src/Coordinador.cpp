@@ -41,7 +41,7 @@ void Coordinador::dibuja_Menu() {
 		0.0, 1.0, 0);      // definimos hacia arriba (eje Y) 
 	glDisable(GL_LIGHTING);
 	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, getTexture("imagenes/menu.png").id);
+	glBindTexture(GL_TEXTURE_2D, getTexture("bin/imagenes/menu.png").id);
 	glDisable(GL_LIGHTING);
 	glBegin(GL_POLYGON);
 	glColor3f(1, 1, 1);
@@ -56,7 +56,7 @@ void Coordinador::dibuja_Menu() {
 
 void Coordinador::dibuja_Instrucciones() {
 	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, ETSIDI::getTexture("imagenes/menu.png").id);
+	glBindTexture(GL_TEXTURE_2D, ETSIDI::getTexture("bin/imagenes/menu.png").id);
 	glDisable(GL_LIGHTING);
 	glBegin(GL_POLYGON);
 	glColor3f(1, 1, 1);
