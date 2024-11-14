@@ -2,6 +2,7 @@
 #include "Ficha.h"
 #include "Jugador.h"
 
+
 class Tablero {
 private:
 	int turno; // Variable que sirve para saber a quien le toca jugar
@@ -29,6 +30,7 @@ public:
 
 	// Control por ratón
 	void control_Raton(int x, int y);
+	void control_gesto();
 
 	// Estas funciones sirven para determinar el primer turno
 	void partida_nueva();

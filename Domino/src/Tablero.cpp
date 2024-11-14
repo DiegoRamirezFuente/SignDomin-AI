@@ -1,5 +1,6 @@
 #include "Tablero.h"
-
+#include "GestureReader.h"
+GestureReader g_tab;
 Tablero::Tablero() {
 	eleccion = 0;
 	eleccion_ficha = 0;
@@ -161,40 +162,120 @@ void Tablero::final_partida() {
 void Tablero::control_Raton(int x, int y) {
 	if (turno == 0) {
 		if (eleccion == 0) {
-			if (x >= 826 && x <= 991 && y >= 223 && y <= 267)
+			if (x >= 826 && x <= 991 && y >= 223 && y <= 267) {
+				x = 0;
+				y = 0;
 				eleccion = 1;
-			else if (x >= 826 && x <= 991 && y >= 434 && y <= 475)
+				
+			}
+			else if (x >= 826 && x <= 991 && y >= 434 && y <= 475) {
+				x = 0;
+				y = 0;
 				eleccion = 2;
+				x = 0;
+				y = 0;
+			}
 		}
 		else if (eleccion != 0 && eleccion_ficha == 0) {
-			if (x >= 282 && x <= 311 && y >= 545 && y <= 600)
+			if (x >= 282 && x <= 311 && y >= 545 && y <= 600) {
+				x = 0;
+				y = 0;
 				eleccion_ficha = 1;
-			else if (x >= 337 && x <= 364 && y >= 545 && y <= 600)
+				
+			}
+			else if (x >= 337 && x <= 364 && y >= 545 && y <= 600) {
+				x = 0;
+				y = 0;
 				eleccion_ficha = 2;
-			else if (x >= 389 && x <= 418 && y >= 545 && y <= 600)
+			
+			}
+			else if (x >= 389 && x <= 418 && y >= 545 && y <= 600) {
+				x = 0;
+				y = 0;
 				eleccion_ficha = 3;
-			else if (x >= 444 && x <= 471 && y >= 545 && y <= 600)
+				;
+			}
+			else if (x >= 444 && x <= 471 && y >= 545 && y <= 600) {
+				x = 0;
+				y = 0;
 				eleccion_ficha = 4;
-			else if (x >= 497 && x <= 525 && y >= 545 && y <= 600)
+				
+			}
+			else if (x >= 497 && x <= 525 && y >= 545 && y <= 600) {
+				x = 0;
+				y = 0;
 				eleccion_ficha = 5;
-			else if (x >= 551 && x <= 578 && y >= 545 && y <= 600)
+				
+			}
+			else if (x >= 551 && x <= 578 && y >= 545 && y <= 600) {
+				x = 0;
+				y = 0;
 				eleccion_ficha = 6;
-			else if (x >= 604 && x <= 633 && y >= 545 && y <= 600)
+			
+			}
+			else if (x >= 604 && x <= 633 && y >= 545 && y <= 600) {
+				x = 0;
+				y = 0;
 				eleccion_ficha = 7;
-			else
+			}
+			else {
+				x = 0;
+				y = 0;
 				eleccion = 0;
+			
+			}
+				
 		}
 		else if (eleccion != 0 && eleccion_ficha != 0 && eleccion_lado == 0) {
-			if (x >= 826 && x <= 991 && y >= 223 && y <= 267)
+			if (x >= 826 && x <= 991 && y >= 223 && y <= 267) {
+				x = 0;
+				y = 0;
 				eleccion_lado = 2;
-			else if (x >= 826 && x <= 991 && y >= 434 && y <= 475)
+				
+			}
+			else if (x >= 826 && x <= 991 && y >= 434 && y <= 475) {
+				x = 0;
+				y = 0;
 				eleccion_lado = 1;
-			else 
+				
+			}
+			else {
+				x = 0;
+				y = 0;
 				eleccion_ficha = 0;
+				
+			}
+				
 		}
 	}
-	x = 0;
-	y = 0;
+}
+void Tablero::control_gesto() {
+	if (turno == 0) {
+		if (eleccion == 0) {
+			if (g_tab.get_gesture() == 6) 
+				eleccion = 1;
+			if (g_tab.get_gesture() == 7)
+				eleccion = 2;
+			
+		}
+		else if (eleccion != 0 && eleccion_ficha == 0) {
+			if (g_tab.get_gesture() == 1)
+				eleccion_ficha == 1;
+			if (g_tab.get_gesture() == 2)
+				eleccion_ficha == 2;
+			if (g_tab.get_gesture() == 3)
+				eleccion_ficha == 3;
+			if (g_tab.get_gesture() == 4)
+				eleccion_ficha == 4;
+			if (g_tab.get_gesture() == 5)
+				eleccion_ficha == 5;
+			if (g_tab.get_gesture() == 8)
+				eleccion_ficha == 6;
+			if (g_tab.get_gesture() == 9)
+				eleccion_ficha == 7;
+		}
+	}
+	
 }
 
 void Tablero::partida_nueva() {

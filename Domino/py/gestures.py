@@ -59,15 +59,18 @@ def process_landmarks(image, landmarks):
 def get_gesture(gestures_detected, current_time, gesture_timestamp, gesture_duration):
     gesture = None
     if (len(gestures_detected) == 2 and gestures_detected[0] == 1 and gestures_detected[1] == 5) or (len(gestures_detected) == 2 and gestures_detected[0] == 5 and gestures_detected[1] == 1):
-        gesture = sum(gestures_detected) + 2  # Sumar los valores de los gestos detectados
+        gesture = sum(gestures_detected) + 2  
         return gesture
-    elif len(gestures_detected) == 1:  # Si solo hay una mano detectada
-        gesture = gestures_detected[0]  # Devuelvo el gesto de esa mano
+    if (len(gestures_detected) == 2 and gestures_detected[0] == 2 and gestures_detected[1] == 5) or (len(gestures_detected) == 2 and gestures_detected[0] == 5 and gestures_detected[1] == 2):
+        gesture = sum(gestures_detected) + 2  
+        return gesture
+    elif len(gestures_detected) == 1:  
+        gesture = gestures_detected[0]  
     if gesture is not None and current_time - gesture_timestamp >= gesture_duration:
         return gesture
     else:
-        return None  # Si no hay un gesto válido, devuelve None
-
+        return None  
+    
 # Inicialización de variables
 last_gesture = None
 gesture_display = None
@@ -89,8 +92,8 @@ while True:
     frame.flags.writeable = True
     frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
 
-    gesture = None  # Variable para el gesto reconocido
-    gestures_detected.clear()  # Limpiar la lista de gestos detectados cada iteración
+    gesture = None  
+    gestures_detected.clear() 
 
     if results.multi_hand_landmarks:
         for hand_landmarks in results.multi_hand_landmarks:
@@ -98,15 +101,15 @@ while True:
             landmarks = process_landmarks(frame, hand_landmarks)
             gesture_index = gesture_classifier(landmarks)
 
-            # Agregar el gesto a la lista de gestos detectados
+           
             gestures_detected.append(gesture_index)
 
-            # Actualizar el tiempo de inicio del gesto
+           
             if gesture_index != last_gesture:
                 last_gesture = gesture_index
                 gesture_timestamp = current_time
 
-    # Llamar a la función get_gesture con los parámetros apropiados
+    
     detected_gesture = get_gesture(gestures_detected, current_time, gesture_timestamp, gesture_duration)
     if detected_gesture is not None:
         #print(detected_gesture)
@@ -119,6 +122,5 @@ while True:
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
-# Liberar recursos y cerrar la ventana de OpenCV
 video.release()
 cv2.destroyAllWindows()

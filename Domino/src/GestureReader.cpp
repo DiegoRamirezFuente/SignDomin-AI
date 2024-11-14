@@ -5,7 +5,7 @@
 #include <string>
 #include <chrono>
 #include <thread>
-#include <sys/stat.h>  // para verificar la fecha de modificación del archivo
+#include <sys/stat.h>  
 
 GestureReader::GestureReader() {
     clearFile();

@@ -1,6 +1,6 @@
 #pragma once
 #include "Tablero.h"
-
+#include "GestureReader.h"
 class Coordinador {
 private:
 	int dificultad; // Para elegir entre Fácil, Intermedio o Difícil

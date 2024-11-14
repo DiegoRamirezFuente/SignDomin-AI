@@ -78,4 +78,5 @@ void clickraton(int boton, int estado, int x, int y) { // sirve para controlar e
 }
 void doGesture() {
 	domino.control_gesto();
+	
 }
