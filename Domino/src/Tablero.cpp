@@ -59,12 +59,9 @@ void Tablero::partida(int dificultad) {
 									eleccion_lado = 0;
 								else if (posibilidad_ficha == 2 && eleccion_lado == 1)
 									eleccion_lado = 0;
-								else {
+								else 
 									colocar_ficha();
-									eleccion = 0;
-									eleccion_ficha = 0;
-									eleccion_lado = 0;
-								}
+								
 							}
 						}
 					}
@@ -87,6 +84,9 @@ void Tablero::partida(int dificultad) {
 
 void Tablero::cambio_turno() {
 	turno = (turno + 1) % 4;
+	eleccion = 0;
+	eleccion_ficha = 0;
+	eleccion_lado = 0;
 }
 
 void Tablero::colocar_ficha() {
