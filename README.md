@@ -1,5 +1,5 @@
 # SignDomin-AI
-1. INSTALAR https://www.python.org/ftp/python/3.8.8/python-3.8.8.exe
+1. INSTALAR https://www.python.org/ftp/python/3.8.8/python-3.8.8-amd64.exe
    **IMPORTANTE AÑADIR AL PATH DURANTE LA INSTALACIÓN**
 2. IR AL CMD Y EJECUTAR:
    
