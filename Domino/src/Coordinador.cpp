@@ -1,5 +1,6 @@
 #include "Coordinador.h"
-
+#include "GestureReader.h"
+GestureReader g;
 Coordinador::Coordinador() {
 	dificultad = 1;
 	final_partida = 0;
@@ -15,13 +16,25 @@ void Coordinador::control_Raton(int x, int y) {
 			estado = JUEGO;
 		}
 	}
-	if (estado == JUEGO)
+	if (estado == JUEGO) 
 		tablero.control_Raton(x, y);
+	
 }
+void Coordinador::control_gesto() {
+	if (estado == MENU && g.get_gesture()==5) {
+		tablero.partida_nueva();
+		estado = JUEGO;
+		}
+	if (estado == MENU && g.get_gesture() == 0) 
+		exit(1);
+	}
+
 
 void Coordinador::partida() {
-	if (estado == MENU)
+	if (estado == MENU) {
 		final_partida = 0;
+		
+	}
 	if (estado == JUEGO && final_partida == 0)
 		tablero.partida(dificultad);
 }

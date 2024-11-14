@@ -1,4 +1,5 @@
 #include "Coordinador.h"
+#include <thread>
 
 Coordinador domino;
 int jugadores = 0, dificultad = 0;
@@ -9,8 +10,16 @@ int jugadores = 0, dificultad = 0;
 void OnDraw(void); // esta funcion sera llamada para dibujar
 void OnTimer(int value); // esta funcion sera llamada cuando transcurra una temporizacion
 void clickraton(int boton, int estado, int x, int y); // Clik de la posicion
-
+void doGesture();
+void runPython() {
+	int result = system("python \"../Domino/py/gestures.py\"");
+	if (result != 0) {
+		std::cerr << "Error al ejecutar el script de Python." << std::endl;
+	}
+}
 int main(int argc, char* argv[]){
+
+	std::thread pyThread(runPython);
 	// Antes de comenzar con el desarrollo del juego, inicializamos el gestor de ventanas GLUT y creamos la ventana
 	glutInit(&argc, argv);
 	glutInitWindowSize(1000, 700);
@@ -29,10 +38,12 @@ int main(int argc, char* argv[]){
 	glutDisplayFunc(OnDraw);
 	glutTimerFunc(25, OnTimer, 0); //le decimos que dentro de 25ms llame 1 vez a la funcion OnTimer()
 	glutMouseFunc(clickraton);
-
+	std::thread gesture(doGesture);
 	//pasarle el control a GLUT,que llamara a los callbacks
 	glutMainLoop();
-
+	gesture.join();
+	pyThread.join();
+	
 	return 0;
 }
 
@@ -52,9 +63,11 @@ void OnDraw(void)
 
 void OnTimer(int value) {
 	domino.partida();
+
 	//no borrar estas lineas
 	glutTimerFunc(25, OnTimer, 0);
 	glutPostRedisplay();
+	
 }
 
 void clickraton(int boton, int estado, int x, int y) { // sirve para controlar el juego por ratón
@@ -62,4 +75,7 @@ void clickraton(int boton, int estado, int x, int y) { // sirve para controlar e
 		domino.control_Raton(x, y);
 		glutPostRedisplay();
 	}
+}
+void doGesture() {
+	domino.control_gesto();
 }

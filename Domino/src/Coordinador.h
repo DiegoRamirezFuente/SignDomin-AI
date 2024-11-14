@@ -14,7 +14,7 @@ public:
 
 	// FUNCIONES RELACIONADAS CON EL MENU
 	void control_Raton(int x, int y);
-
+	void control_gesto();
 	// para controlar el desarrollo de la partida
 	void partida();
 
