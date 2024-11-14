@@ -11,38 +11,41 @@ Coordinador::Coordinador() {
 
 Coordinador::~Coordinador() {}
 
-void Coordinador::control_Raton(int x, int y) {
+/*void Coordinador::control_Raton(int x, int y) {
 	if (estado == MENU) {
 		if (x >= 100 && x <= 900 && y >= 350 && y <= 550) {
 			x = 0;
 			y = 0;
-			tablero.partida_nueva();
-			estado = JUEGO;
+			//tablero.partida_nueva();
+			//estado = JUEGO;
 		}
 	}
 	if (estado == JUEGO) {
-		tablero.control_Raton(x, y);
-		//tablero.control_gesto();
+		//tablero.control_Raton(x, y);
+		tablero.control_gesto();
 	}
 	
-}
+}*/
 void Coordinador::control_gesto() {
 	int gesto;
 	if (estado == MENU) {
 		do {
 			gesto = g_coord.get_gesture();
-		}while (gesto != 5);
-		printf("Palma detectada");
-		ETSIDI::play("bin/sounds/success.wav");
-		tablero.partida_nueva();
-		estado = JUEGO;
+		} while (gesto != 5 && gesto != 0);
+		if (gesto == 5) {
+			printf("Palma detectada");
+			ETSIDI::play("bin/sounds/success.wav");
+			tablero.partida_nueva();
+			estado = JUEGO;
 		}
-	if (estado == JUEGO) {
-		//tablero.control_gesto();
-		
-	}
-	if (estado == MENU && g_coord.get_gesture() == 0) 
-		exit(1);
+		else if (gesto == 0) {
+			printf("Bye bye");
+			exit(1);
+		}
+		if (estado == JUEGO) 
+			tablero.control_gesto();
+
+		}
 	}
 
 

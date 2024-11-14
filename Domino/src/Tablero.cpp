@@ -39,7 +39,7 @@ void Tablero::partida(int dificultad) {
 		cambio_turno();
 	}
 
-	final_partida();
+	
 	if (fin == 0) {
 		if (turno == 0) { // Nosotros controlamos el jugador local
 			if (eleccion != 0) {
@@ -94,25 +94,33 @@ void Tablero::colocar_ficha() {
 		if (tablero[cont_der].get_lado() == 0 && this->jugadores[turno].get_ficha(eleccion_ficha - 1).get_num1() == tablero[cont_der].get_num2()) {
 			tablero[++cont_der].cambiar_ficha(this->jugadores[turno].get_ficha(eleccion_ficha - 1).get_id());
 			this->jugadores[turno].cambiar_ficha(eleccion_ficha - 1);
-			cambio_turno();
+			final_partida();
+			if(fin==0)
+				cambio_turno();
 			return;
 		}
 		if (tablero[cont_der].get_lado() == 0 && this->jugadores[turno].get_ficha(eleccion_ficha - 1).get_num2() == tablero[cont_der].get_num2()) {
 			tablero[++cont_der].cambiar_ficha(this->jugadores[turno].get_ficha(eleccion_ficha - 1).get_id(), 1);
 			this->jugadores[turno].cambiar_ficha(eleccion_ficha - 1);
+			final_partida();
+			if (fin == 0)
 			cambio_turno();
 			return;
 		}
 		if (tablero[cont_der].get_lado() == 1 && this->jugadores[turno].get_ficha(eleccion_ficha - 1).get_num1() == tablero[cont_der].get_num1()) {
 			tablero[++cont_der].cambiar_ficha(this->jugadores[turno].get_ficha(eleccion_ficha - 1).get_id());
 			this->jugadores[turno].cambiar_ficha(eleccion_ficha - 1);
+			final_partida();
+			if (fin == 0)
 			cambio_turno();
 			return;
 		}
 		if (tablero[cont_der].get_lado() == 1 && this->jugadores[turno].get_ficha(eleccion_ficha - 1).get_num2() == tablero[cont_der].get_num1()) {
 			tablero[++cont_der].cambiar_ficha(this->jugadores[turno].get_ficha(eleccion_ficha - 1).get_id(), 1);
 			this->jugadores[turno].cambiar_ficha(eleccion_ficha - 1);
-			cambio_turno();
+			final_partida();
+			if (fin == 0)
+				cambio_turno();
 			return;
 		}
 	}
@@ -120,25 +128,33 @@ void Tablero::colocar_ficha() {
 		if (tablero[cont_izq].get_lado() == 0 && this->jugadores[turno].get_ficha(eleccion_ficha - 1).get_num1() == tablero[cont_izq].get_num1()) {
 			tablero[--cont_izq].cambiar_ficha(this->jugadores[turno].get_ficha(eleccion_ficha - 1).get_id(), 1);
 			this->jugadores[turno].cambiar_ficha(eleccion_ficha - 1);
-			cambio_turno();
+			final_partida();
+			if (fin == 0)
+				cambio_turno();
 			return;
 		}
 		if (tablero[cont_izq].get_lado() == 0 && this->jugadores[turno].get_ficha(eleccion_ficha - 1).get_num2() == tablero[cont_izq].get_num1()) {
 			tablero[--cont_izq].cambiar_ficha(this->jugadores[turno].get_ficha(eleccion_ficha - 1).get_id());
 			this->jugadores[turno].cambiar_ficha(eleccion_ficha - 1);
-			cambio_turno();
+			final_partida();
+			if (fin == 0)
+				cambio_turno();
 			return;
 		}
 		if (tablero[cont_izq].get_lado() == 1 && this->jugadores[turno].get_ficha(eleccion_ficha - 1).get_num1() == tablero[cont_izq].get_num2()) {
 			tablero[--cont_izq].cambiar_ficha(this->jugadores[turno].get_ficha(eleccion_ficha - 1).get_id(), 1);
 			this->jugadores[turno].cambiar_ficha(eleccion_ficha - 1);
-			cambio_turno();
+			final_partida();
+			if (fin == 0)
+				cambio_turno();
 			return;
 		}
 		if (tablero[cont_izq].get_lado() == 1 && this->jugadores[turno].get_ficha(eleccion_ficha - 1).get_num2() == tablero[cont_izq].get_num2()) {
 			tablero[--cont_izq].cambiar_ficha(this->jugadores[turno].get_ficha(eleccion_ficha - 1).get_id());
 			this->jugadores[turno].cambiar_ficha(eleccion_ficha - 1);
-			cambio_turno();
+			final_partida();
+			if (fin == 0)
+				cambio_turno();
 			return;
 		}
 	}
@@ -159,68 +175,57 @@ void Tablero::final_partida() {
 	return;
 }
 
-void Tablero::control_Raton(int x, int y) {
+/*void Tablero::control_Raton(int x, int y) {
 	if (turno == 0) {
 		if (eleccion == 0) {
 			if (x >= 826 && x <= 991 && y >= 223 && y <= 267) {
-				x = 0;
-				y = 0;
+				
 				eleccion = 1;
 				
 			}
 			else if (x >= 826 && x <= 991 && y >= 434 && y <= 475) {
-				x = 0;
-				y = 0;
+				
 				eleccion = 2;
-				x = 0;
-				y = 0;
+			
 			}
 		}
 		else if (eleccion != 0 && eleccion_ficha == 0) {
 			if (x >= 282 && x <= 311 && y >= 545 && y <= 600) {
-				x = 0;
-				y = 0;
+				
 				eleccion_ficha = 1;
 				
 			}
 			else if (x >= 337 && x <= 364 && y >= 545 && y <= 600) {
-				x = 0;
-				y = 0;
+			
 				eleccion_ficha = 2;
 			
 			}
 			else if (x >= 389 && x <= 418 && y >= 545 && y <= 600) {
-				x = 0;
-				y = 0;
+		
 				eleccion_ficha = 3;
 				;
 			}
 			else if (x >= 444 && x <= 471 && y >= 545 && y <= 600) {
-				x = 0;
-				y = 0;
+				
 				eleccion_ficha = 4;
 				
 			}
 			else if (x >= 497 && x <= 525 && y >= 545 && y <= 600) {
-				x = 0;
-				y = 0;
+				
 				eleccion_ficha = 5;
 				
 			}
 			else if (x >= 551 && x <= 578 && y >= 545 && y <= 600) {
-				x = 0;
-				y = 0;
+				
 				eleccion_ficha = 6;
 			
 			}
 			else if (x >= 604 && x <= 633 && y >= 545 && y <= 600) {
-				x = 0;
-				y = 0;
+				
 				eleccion_ficha = 7;
 			}
 			else {
-				x = 0;
-				y = 0;
+				
 				eleccion = 0;
 			
 			}
@@ -228,55 +233,97 @@ void Tablero::control_Raton(int x, int y) {
 		}
 		else if (eleccion != 0 && eleccion_ficha != 0 && eleccion_lado == 0) {
 			if (x >= 826 && x <= 991 && y >= 223 && y <= 267) {
-				x = 0;
-				y = 0;
+				
 				eleccion_lado = 2;
 				
 			}
 			else if (x >= 826 && x <= 991 && y >= 434 && y <= 475) {
-				x = 0;
-				y = 0;
+				
 				eleccion_lado = 1;
 				
 			}
-			else {
-				x = 0;
-				y = 0;
+			else 
 				eleccion_ficha = 0;
 				
 			}
-				
+			x = 0;
+			y = 0;
 		}
-	}
-}
+	}*/   
+
 void Tablero::control_gesto() {
+	int gesto;
 	if (turno == 0) {
+		cout << turno << endl;
 		if (eleccion == 0) {
-			if (g_tab.get_gesture() == 6) 
+			do {
+				printf("estoy\n");
+				gesto = g_tab.get_gesture();
+			} while (gesto!=6 && gesto!=7);
+
+			if (gesto == 6) {
 				eleccion = 1;
-			if (g_tab.get_gesture() == 7)
+				ETSIDI::play("bin/sounds/success.wav");
+			}
+			if (gesto == 7) {
 				eleccion = 2;
+				ETSIDI::play("bin/sounds/success.wav");
+			}
 			
 		}
 		else if (eleccion != 0 && eleccion_ficha == 0) {
-			if (g_tab.get_gesture() == 1)
-				eleccion_ficha == 1;
-			if (g_tab.get_gesture() == 2)
-				eleccion_ficha == 2;
-			if (g_tab.get_gesture() == 3)
-				eleccion_ficha == 3;
-			if (g_tab.get_gesture() == 4)
-				eleccion_ficha == 4;
-			if (g_tab.get_gesture() == 5)
-				eleccion_ficha == 5;
-			if (g_tab.get_gesture() == 8)
-				eleccion_ficha == 6;
-			if (g_tab.get_gesture() == 9)
-				eleccion_ficha == 7;
+				do {
+					printf("aaaaa\n");
+					gesto = g_tab.get_gesture();
+				}while (gesto != 1 && gesto != 2 && gesto != 3 && gesto != 4 && gesto != 5 && gesto != 8 && gesto != 9);
+			
+				if (g_tab.get_gesture() == 1) {
+					eleccion_ficha == 1;
+					ETSIDI::play("bin/sounds/1.wav");
+				}
+				if (g_tab.get_gesture() == 2) {
+					eleccion_ficha == 2;
+					ETSIDI::play("bin/sounds/2.wav");
+				}
+				if (g_tab.get_gesture() == 3) {
+					eleccion_ficha == 3;
+					ETSIDI::play("bin/sounds/3.wav");
+				}
+				if (g_tab.get_gesture() == 4) {
+					eleccion_ficha == 4;
+					ETSIDI::play("bin/sounds/4.wav");
+				}
+				if (g_tab.get_gesture() == 5) {
+					eleccion_ficha == 5;
+					ETSIDI::play("bin/sounds/5.wav");
+				}
+				if (g_tab.get_gesture() == 8) {
+					eleccion_ficha == 8;
+					ETSIDI::play("bin/sounds/6.wav");
+				}
+				if (g_tab.get_gesture() == 9) {
+					eleccion_ficha == 9;
+					ETSIDI::play("bin/sounds/7.wav");
+				}
+		}
+			else
+				eleccion = 0;
+		}
+		else if (eleccion != 0 && eleccion_ficha != 0 && eleccion_lado == 0) {
+				do{
+					gesto = g_tab.get_gesture();
+				}while (gesto != 6 && gesto != 7);
+
+				if (g_tab.get_gesture() == 6)
+					eleccion_lado = 2;
+				else if (g_tab.get_gesture() == 7)
+					eleccion_lado = 1;
+				else
+					eleccion_ficha = 0;
 		}
 	}
 	
-}
+
 
 void Tablero::partida_nueva() {
 	inicio = 0;

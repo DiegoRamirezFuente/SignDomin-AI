@@ -37,6 +37,7 @@ public:
 	void reparto_fichas();
 	void primer_turno();
 
+
 	// Funciones parte gráfica
 	void dibuja();
 };

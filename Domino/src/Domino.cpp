@@ -1,4 +1,4 @@
-#include "Coordinador.h"
+ï»¿#include "Coordinador.h"
 #include <thread>
 
 Coordinador domino;
@@ -9,7 +9,7 @@ int jugadores = 0, dificultad = 0;
 // NO HACE FALTA LLAMARLAS EXPLICITAMENTE
 void OnDraw(void); // esta funcion sera llamada para dibujar
 void OnTimer(int value); // esta funcion sera llamada cuando transcurra una temporizacion
-void clickraton(int boton, int estado, int x, int y); // Clik de la posicion
+//void clickraton(int boton, int estado, int x, int y); // Clik de la posicion
 void doGesture();
 void runPython() {
 	int result = system("python \"../Domino/py/gestures.py\"");
@@ -17,7 +17,7 @@ void runPython() {
 		std::cerr << "Error al ejecutar el script de Python." << std::endl;
 	}
 }
-int main(int argc, char* argv[]){
+int main(int argc, char* argv[]) {
 
 	std::thread pyThread(runPython);
 	// Antes de comenzar con el desarrollo del juego, inicializamos el gestor de ventanas GLUT y creamos la ventana
@@ -26,7 +26,7 @@ int main(int argc, char* argv[]){
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 	glutCreateWindow("Juego del Domino");
 
-	// También, tenemos que habilitar luces y definir perspectiva
+	// Tambiï¿½n, tenemos que habilitar luces y definir perspectiva
 	glEnable(GL_LIGHT0);
 	glEnable(GL_LIGHTING);
 	glEnable(GL_DEPTH_TEST);
@@ -37,13 +37,13 @@ int main(int argc, char* argv[]){
 	// Registrar los callbacks
 	glutDisplayFunc(OnDraw);
 	glutTimerFunc(25, OnTimer, 0); //le decimos que dentro de 25ms llame 1 vez a la funcion OnTimer()
-	glutMouseFunc(clickraton);
+	//glutMouseFunc(clickraton);
 	std::thread gesture(doGesture);
 	//pasarle el control a GLUT,que llamara a los callbacks
 	glutMainLoop();
 	gesture.join();
 	pyThread.join();
-	
+
 	return 0;
 }
 
@@ -67,16 +67,16 @@ void OnTimer(int value) {
 	//no borrar estas lineas
 	glutTimerFunc(25, OnTimer, 0);
 	glutPostRedisplay();
-	
+
 }
 
-void clickraton(int boton, int estado, int x, int y) { // sirve para controlar el juego por ratón
+/*void clickraton(int boton, int estado, int x, int y) { // sirve para controlar el juego por ratï¿½n
 	if (boton == GLUT_LEFT_BUTTON && estado == GLUT_DOWN) {
 		domino.control_Raton(x, y);
 		glutPostRedisplay();
 	}
-}
+}*/
 void doGesture() {
 	domino.control_gesto();
-	
+
 }
