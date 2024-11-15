@@ -163,6 +163,7 @@ void Tablero::colocar_ficha() {
 void Tablero::final_partida() {
 	if (this->jugadores[turno].sin_fichas() == 1) { // 1 si el jugador se ha quedado sin fichas
 		fin = 1;
+		ETSIDI::play("bin/sounds/win.wav");
 		return;
 	}
 	for (int i = 0; i < 4; i++) {
@@ -250,79 +251,79 @@ void Tablero::final_partida() {
 			y = 0;
 		}
 	}*/   
-
 void Tablero::control_gesto() {
 	int gesto;
 	if (turno == 0) {
-		cout << turno << endl;
 		if (eleccion == 0) {
 			do {
-				printf("estoy\n");
 				gesto = g_tab.get_gesture();
-			} while (gesto!=6 && gesto!=7);
+			} while (gesto != 6 && gesto != 7);
 
 			if (gesto == 6) {
 				eleccion = 1;
 				ETSIDI::play("bin/sounds/success.wav");
 			}
-			if (gesto == 7) {
+			else if (gesto == 7) {
 				eleccion = 2;
 				ETSIDI::play("bin/sounds/success.wav");
 			}
-			
 		}
 		else if (eleccion != 0 && eleccion_ficha == 0) {
-				do {
-					printf("aaaaa\n");
-					gesto = g_tab.get_gesture();
-				}while (gesto != 1 && gesto != 2 && gesto != 3 && gesto != 4 && gesto != 5 && gesto != 8 && gesto != 9);
-			
-				if (g_tab.get_gesture() == 1) {
-					eleccion_ficha == 1;
-					ETSIDI::play("bin/sounds/1.wav");
-				}
-				if (g_tab.get_gesture() == 2) {
-					eleccion_ficha == 2;
-					ETSIDI::play("bin/sounds/2.wav");
-				}
-				if (g_tab.get_gesture() == 3) {
-					eleccion_ficha == 3;
-					ETSIDI::play("bin/sounds/3.wav");
-				}
-				if (g_tab.get_gesture() == 4) {
-					eleccion_ficha == 4;
-					ETSIDI::play("bin/sounds/4.wav");
-				}
-				if (g_tab.get_gesture() == 5) {
-					eleccion_ficha == 5;
-					ETSIDI::play("bin/sounds/5.wav");
-				}
-				if (g_tab.get_gesture() == 8) {
-					eleccion_ficha == 8;
-					ETSIDI::play("bin/sounds/6.wav");
-				}
-				if (g_tab.get_gesture() == 9) {
-					eleccion_ficha == 9;
-					ETSIDI::play("bin/sounds/7.wav");
-				}
-		}
-			else
-				eleccion = 0;
+			ETSIDI::play("bin/sounds/choose.wav");
+			do {
+				gesto = g_tab.get_gesture();
+			} while (gesto != 1 && gesto != 2 && gesto != 3 && gesto != 4 &&
+				gesto != 5 && gesto != 8 && gesto != 9);
+
+			if (gesto == 1) {
+				eleccion_ficha = 1;
+				ETSIDI::play("bin/sounds/1.wav");
+			}
+			else if (gesto == 2) {
+				eleccion_ficha = 2;
+				ETSIDI::play("bin/sounds/2.wav");
+			}
+			else if (gesto == 3) {
+				eleccion_ficha = 3;
+				ETSIDI::play("bin/sounds/3.wav");
+			}
+			else if (gesto == 4) {
+				eleccion_ficha = 4;
+				ETSIDI::play("bin/sounds/4.wav");
+			}
+			else if (gesto == 5) {
+				eleccion_ficha = 5;
+				ETSIDI::play("bin/sounds/5.wav");
+			}
+			else if (gesto == 8) {
+				eleccion_ficha = 6;
+				ETSIDI::play("bin/sounds/6.wav");
+			}
+			else if (gesto == 9) {
+				eleccion_ficha = 7;
+				ETSIDI::play("bin/sounds/7.wav");
+			}
 		}
 		else if (eleccion != 0 && eleccion_ficha != 0 && eleccion_lado == 0) {
-				do{
-					gesto = g_tab.get_gesture();
-				}while (gesto != 6 && gesto != 7);
+			do {
+				gesto = g_tab.get_gesture();
+			} while (gesto != 6 && gesto != 7);
 
-				if (g_tab.get_gesture() == 6)
-					eleccion_lado = 2;
-				else if (g_tab.get_gesture() == 7)
-					eleccion_lado = 1;
-				else
-					eleccion_ficha = 0;
+			if (gesto == 6) {
+				eleccion_lado = 2;
+				ETSIDI::play("bin/sounds/select.wav");
+			}
+			else if (gesto == 7) {
+				eleccion_lado = 1;
+				ETSIDI::play("bin/sounds/select.wav");
+			}
+			else {
+				eleccion_ficha = 0; // Restablecer elección ficha si el gesto es inválido
+			}
 		}
 	}
-	
+}
+
 
 
 void Tablero::partida_nueva() {

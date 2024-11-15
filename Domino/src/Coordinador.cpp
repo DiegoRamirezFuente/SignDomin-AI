@@ -42,10 +42,11 @@ void Coordinador::control_gesto() {
 			printf("Bye bye");
 			exit(1);
 		}
-		if (estado == JUEGO) 
-			tablero.control_gesto();
+		
 
 		}
+	if (estado == JUEGO) 
+		tablero.control_gesto();
 	}
 
 

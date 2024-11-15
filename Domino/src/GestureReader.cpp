@@ -50,9 +50,9 @@ int GestureReader::get_gesture() {
             }
         }
 
-        // Espera para no hacer polling constante
+        
         if (gesture == -1) {
-            std::this_thread::sleep_for(std::chrono::milliseconds(50)); // 50 ms de espera
+            std::this_thread::sleep_for(std::chrono::milliseconds(50)); 
         }
     }
     return gesture;

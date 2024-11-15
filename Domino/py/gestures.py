@@ -76,7 +76,7 @@ last_gesture = None
 gesture_display = None
 start_time = None
 last_update_time = time.time()
-gesture_duration = 0  # Duración mínima para que un gesto sea válido
+gesture_duration = 0.5  # Duración mínima para que un gesto sea válido
 gesture_timestamp = time.time()  # Marca de tiempo cuando se detecta un gesto por primera vez
 gestures_detected = []  # Lista para almacenar los gestos detectados por cada mano
 

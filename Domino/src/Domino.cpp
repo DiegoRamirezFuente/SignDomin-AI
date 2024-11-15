@@ -77,6 +77,7 @@ void OnTimer(int value) {
 	}
 }*/
 void doGesture() {
-	domino.control_gesto();
+	while(1)
+		domino.control_gesto();
 
 }
