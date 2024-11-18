@@ -1,92 +1,59 @@
 #include "Tablero.h"
-#include "GestureReader.h"
-GestureReader g_tab;
+
+int sonido_final;
+
 Tablero::Tablero() {
+	primer_movimiento = 0;
+	movimiento_controlado = 0;
+	turno = -1;
+	inicio = 0;
+	fin = 0;
 	eleccion = 0;
 	eleccion_ficha = 0;
 	eleccion_lado = 0;
-	turno = - 1;
-	fin = 0;
 	cont_der = 27;
 	cont_izq = 27;
-	for (int i = 0; i < 55; i++)
-		tablero[i].cambiar_ficha();
 }
 
 void Tablero::partida(int dificultad) {
-	int posibilidad_total = 0;
-	int posibilidad_ficha = 0;
-
 	if (inicio == 0) {
 		inicio = 1;
-		eleccion = 0;
-		eleccion_ficha = 0;
-		eleccion_lado = 0;
-		turno = -1;
-		fin = 0;
-		cont_der = 27;
-		cont_izq = 27;
-		for (int i = 0; i < 55; i++)
-			tablero[i].cambiar_ficha();
-		for (int i = 0; i < 4; i++)
-			this->jugadores[i].vaciar_contenido();
-
-		// Generamos el primer turno
 		reparto_fichas();
-		dibuja();
-		primer_turno();
-		dibuja();
-		cambio_turno();
+		Sleep(2000);
 	}
-
-	
-	if (fin == 0) {
-		if (turno == 0) { // Nosotros controlamos el jugador local
-			if (eleccion != 0) {
-				posibilidad_total = this->jugadores[turno].posibilidad_poner(tablero, cont_der, cont_izq);
-				if (eleccion == 1 && posibilidad_total == 0)
-					eleccion = 0;
-				else if (eleccion == 2)
-					cambio_turno();
-				if (eleccion == 1 && posibilidad_total == 1) {
-					if (eleccion_ficha != 0) {
-						posibilidad_ficha = this->jugadores[turno].posibilidad_poner(tablero, cont_der, cont_izq, eleccion_ficha);
-						if (posibilidad_ficha == 0)
-							eleccion_ficha = 0;
-						else {
-							if (eleccion_lado != 0) {
-								if (posibilidad_ficha == 1 && eleccion_lado == 2)
-									eleccion_lado = 0;
-								else if (posibilidad_ficha == 2 && eleccion_lado == 1)
-									eleccion_lado = 0;
-								else 
-									colocar_ficha();
-								
-							}
-						}
-					}
-				}
-			}
-		}
-		else { // El jugador máquina juega solo
-			this->jugadores[turno].juego_IA(tablero, cont_der, cont_izq, &eleccion, &eleccion_ficha, &eleccion_lado, dificultad);
-			if (eleccion == 1)
-				colocar_ficha();
-			if (eleccion == 2)
-				cambio_turno();
-			Sleep(2000);
-		}
+	else if (inicio == 1) {
+		inicio = 2;
+		primer_turno();
+		primer_movimiento = 1;
+		cambio_turno(); // Cambiamos el turno
+		Sleep(2000);
 	}
 	else {
-		cout << "El jugador " << turno + 1 << " ha ganado la partida" << endl;
+		if (fin == 0) {
+			if (turno == 0 && movimiento_controlado == 0) { // Nosotros controlamos el jugador local
+				if (eleccion == 1 && eleccion_ficha != 0 && eleccion_lado != 0)
+					colocar_ficha();
+				else if (eleccion == 2)
+					cambio_turno();
+			}
+			else if (turno != 0) { // El jugador máquina juega solo
+				this->jugadores[turno].juego_IA(tablero, cont_der, cont_izq, &eleccion, &eleccion_ficha, &eleccion_lado, dificultad);
+				if (eleccion == 1)
+					colocar_ficha();
+				else if (eleccion == 2)
+					cambio_turno();
+				Sleep(2000); // Ponemos un sleep para "simular" el tiempo que tarda en pensar
+			}
+		}
 	}
 }
 
 void Tablero::cambio_turno() {
-	turno = (turno + 1) % 4;
 	eleccion = 0;
 	eleccion_ficha = 0;
 	eleccion_lado = 0;
+	turno = (turno + 1) % 4;
+	
 }
 
 void Tablero::colocar_ficha() {
@@ -95,7 +62,7 @@ void Tablero::colocar_ficha() {
 			tablero[++cont_der].cambiar_ficha(this->jugadores[turno].get_ficha(eleccion_ficha - 1).get_id());
 			this->jugadores[turno].cambiar_ficha(eleccion_ficha - 1);
 			final_partida();
-			if(fin==0)
+			if(fin == 0)
 				cambio_turno();
 			return;
 		}
@@ -104,7 +71,7 @@ void Tablero::colocar_ficha() {
 			this->jugadores[turno].cambiar_ficha(eleccion_ficha - 1);
 			final_partida();
 			if (fin == 0)
-			cambio_turno();
+				cambio_turno();
 			return;
 		}
 		if (tablero[cont_der].get_lado() == 1 && this->jugadores[turno].get_ficha(eleccion_ficha - 1).get_num1() == tablero[cont_der].get_num1()) {
@@ -112,7 +79,7 @@ void Tablero::colocar_ficha() {
 			this->jugadores[turno].cambiar_ficha(eleccion_ficha - 1);
 			final_partida();
 			if (fin == 0)
-			cambio_turno();
+				cambio_turno();
 			return;
 		}
 		if (tablero[cont_der].get_lado() == 1 && this->jugadores[turno].get_ficha(eleccion_ficha - 1).get_num2() == tablero[cont_der].get_num1()) {
@@ -163,7 +130,6 @@ void Tablero::colocar_ficha() {
 void Tablero::final_partida() {
 	if (this->jugadores[turno].sin_fichas() == 1) { // 1 si el jugador se ha quedado sin fichas
 		fin = 1;
-		ETSIDI::play("bin/sounds/win.wav");
 		return;
 	}
 	for (int i = 0; i < 4; i++) {
@@ -176,158 +142,151 @@ void Tablero::final_partida() {
 	return;
 }
 
-/*void Tablero::control_Raton(int x, int y) {
-	if (turno == 0) {
+void Tablero::control_Raton(int x, int y) {
+	if (turno == 0 && primer_movimiento == 1 && fin == 0 && movimiento_controlado == 1) {
 		if (eleccion == 0) {
-			if (x >= 826 && x <= 991 && y >= 223 && y <= 267) {
-				
-				eleccion = 1;
-				
+			if (x >= 826 && x <= 991 && y >= 223 && y <= 267 && this->jugadores[turno].posibilidad_poner(tablero, cont_der, cont_izq) == 1) {
+				eleccion = 1; // Poner
+				play("bin/sonidos/success.wav");
 			}
 			else if (x >= 826 && x <= 991 && y >= 434 && y <= 475) {
-				
-				eleccion = 2;
-			
+				movimiento_controlado = 0;
+				eleccion = 2; // Pasar
+				play("bin/sonidos/success.wav");
 			}
 		}
 		else if (eleccion != 0 && eleccion_ficha == 0) {
-			if (x >= 282 && x <= 311 && y >= 545 && y <= 600) {
-				
+			if (x >= 282 && x <= 311 && y >= 545 && y <= 600 && this->jugadores[turno].posibilidad_poner(tablero, cont_der, cont_izq, 1) != 0 && jugadores[0].get_contador() >= 0) {
 				eleccion_ficha = 1;
-				
+				play("bin/sonidos/1.wav");
 			}
-			else if (x >= 337 && x <= 364 && y >= 545 && y <= 600) {
-			
+			else if (x >= 337 && x <= 364 && y >= 545 && y <= 600 && this->jugadores[turno].posibilidad_poner(tablero, cont_der, cont_izq, 2) != 0 && jugadores[0].get_contador() >= 1) {
 				eleccion_ficha = 2;
-			
+				play("bin/sonidos/2.wav");
 			}
-			else if (x >= 389 && x <= 418 && y >= 545 && y <= 600) {
-		
+			else if (x >= 389 && x <= 418 && y >= 545 && y <= 600 && this->jugadores[turno].posibilidad_poner(tablero, cont_der, cont_izq, 3) != 0 && jugadores[0].get_contador() >= 2) {
 				eleccion_ficha = 3;
-				;
+				play("bin/sonidos/3.wav");
 			}
-			else if (x >= 444 && x <= 471 && y >= 545 && y <= 600) {
-				
+			else if (x >= 444 && x <= 471 && y >= 545 && y <= 600 && this->jugadores[turno].posibilidad_poner(tablero, cont_der, cont_izq, 4) != 0 && jugadores[0].get_contador() >= 3) {
 				eleccion_ficha = 4;
-				
+				play("bin/sonidos/4.wav");
 			}
-			else if (x >= 497 && x <= 525 && y >= 545 && y <= 600) {
-				
+			else if (x >= 497 && x <= 525 && y >= 545 && y <= 600 && this->jugadores[turno].posibilidad_poner(tablero, cont_der, cont_izq, 5) != 0 && jugadores[0].get_contador() >= 4) {
 				eleccion_ficha = 5;
-				
+				play("bin/sonidos/5.wav");
 			}
-			else if (x >= 551 && x <= 578 && y >= 545 && y <= 600) {
-				
+			else if (x >= 551 && x <= 578 && y >= 545 && y <= 600 && this->jugadores[turno].posibilidad_poner(tablero, cont_der, cont_izq, 6) != 0 && jugadores[0].get_contador() >= 5) {
 				eleccion_ficha = 6;
-			
+				play("bin/sonidos/6.wav");
 			}
-			else if (x >= 604 && x <= 633 && y >= 545 && y <= 600) {
-				
+			else if (x >= 604 && x <= 633 && y >= 545 && y <= 600 && this->jugadores[turno].posibilidad_poner(tablero, cont_der, cont_izq, 7) != 0 && jugadores[0].get_contador() >= 6) {
 				eleccion_ficha = 7;
+				play("bin/sonidos/7.wav");
 			}
-			else {
-				
-				eleccion = 0;
-			
-			}
-				
 		}
 		else if (eleccion != 0 && eleccion_ficha != 0 && eleccion_lado == 0) {
-			if (x >= 826 && x <= 991 && y >= 223 && y <= 267) {
-				
-				eleccion_lado = 2;
-				
+			if (x >= 826 && x <= 991 && y >= 223 && y <= 267 && ((this->jugadores[turno].posibilidad_poner(tablero, cont_der, cont_izq, eleccion_ficha) == 2) || (this->jugadores[turno].posibilidad_poner(tablero, cont_der, cont_izq, eleccion_ficha) == 3))) {
+				movimiento_controlado = 0;
+				eleccion_lado = 2; // Izquierda
+				play("bin/sonidos/select.wav");
 			}
-			else if (x >= 826 && x <= 991 && y >= 434 && y <= 475) {
-				
-				eleccion_lado = 1;
-				
+			else if (x >= 826 && x <= 991 && y >= 434 && y <= 475 && ((this->jugadores[turno].posibilidad_poner(tablero, cont_der, cont_izq, eleccion_ficha) == 1) || (this->jugadores[turno].posibilidad_poner(tablero, cont_der, cont_izq, eleccion_ficha) == 3))) {
+				movimiento_controlado = 0;
+				eleccion_lado = 1; // Derecha
+				play("bin/sonidos/select.wav");
 			}
-			else 
+			else if (x < 826 || x > 991 || y < 223 || y > 475 || (y >= 267 && y <= 434))
 				eleccion_ficha = 0;
-				
-			}
-			x = 0;
-			y = 0;
 		}
-	}*/   
-void Tablero::control_gesto() {
-	int gesto;
-	if (turno == 0) {
-		if (eleccion == 0) {
-			do {
-				gesto = g_tab.get_gesture();
-			} while (gesto != 6 && gesto != 7);
+	}
+	// Reseteamos los valores de x e y para que no me influyan en jugadas posteriores
+	x = 0;
+	y = 0;
+}
 
-			if (gesto == 6) {
-				eleccion = 1;
-				ETSIDI::play("bin/sounds/success.wav");
+void Tablero::control_Gestos(GestureReader* gesto) {
+	if (turno == 0 && primer_movimiento == 1 && fin == 0 && movimiento_controlado == 1) {
+		if (eleccion == 0) {
+			gesto->identificar_gesto();
+			if (gesto->get_Gesto() == 6 && this->jugadores[turno].posibilidad_poner(tablero, cont_der, cont_izq) == 1) {
+				eleccion = 1; // Poner
+				play("bin/sonidos/success.wav");
 			}
-			else if (gesto == 7) {
-				eleccion = 2;
-				ETSIDI::play("bin/sounds/success.wav");
+			else if (gesto->get_Gesto() == 7) {
+				eleccion = 2; // Pasar
+				movimiento_controlado = 0;
+				play("bin/sonidos/pass.wav");
 			}
 		}
 		else if (eleccion != 0 && eleccion_ficha == 0) {
-			ETSIDI::play("bin/sounds/choose.wav");
-			do {
-				gesto = g_tab.get_gesture();
-			} while (gesto != 1 && gesto != 2 && gesto != 3 && gesto != 4 &&
-				gesto != 5 && gesto != 8 && gesto != 9);
-
-			if (gesto == 1) {
+			play("bin/sonidos/choose.wav");
+			gesto->identificar_gesto();
+			if (gesto->get_Gesto() == 1 && this->jugadores[turno].posibilidad_poner(tablero, cont_der, cont_izq, 1) != 0 && jugadores[0].get_contador() >= 0) {
 				eleccion_ficha = 1;
-				ETSIDI::play("bin/sounds/1.wav");
+				play("bin/sonidos/1.wav");
 			}
-			else if (gesto == 2) {
+			else if (gesto->get_Gesto() == 2 && this->jugadores[turno].posibilidad_poner(tablero, cont_der, cont_izq, 2) != 0 && jugadores[0].get_contador() >= 1) {
 				eleccion_ficha = 2;
-				ETSIDI::play("bin/sounds/2.wav");
+				play("bin/sonidos/2.wav");
 			}
-			else if (gesto == 3) {
+			else if (gesto->get_Gesto() == 3 && this->jugadores[turno].posibilidad_poner(tablero, cont_der, cont_izq, 3) != 0 && jugadores[0].get_contador() >= 2) {
 				eleccion_ficha = 3;
-				ETSIDI::play("bin/sounds/3.wav");
+				play("bin/sonidos/3.wav");
 			}
-			else if (gesto == 4) {
+			else if (gesto->get_Gesto() == 4 && this->jugadores[turno].posibilidad_poner(tablero, cont_der, cont_izq, 4) != 0 && jugadores[0].get_contador() >= 3) {
 				eleccion_ficha = 4;
-				ETSIDI::play("bin/sounds/4.wav");
+				play("bin/sonidos/4.wav");
 			}
-			else if (gesto == 5) {
+			else if (gesto->get_Gesto() == 5 && this->jugadores[turno].posibilidad_poner(tablero, cont_der, cont_izq, 5) != 0 && jugadores[0].get_contador() >= 4) {
 				eleccion_ficha = 5;
-				ETSIDI::play("bin/sounds/5.wav");
+				play("bin/sonidos/5.wav");
 			}
-			else if (gesto == 8) {
+			else if (gesto->get_Gesto() == 8 && this->jugadores[turno].posibilidad_poner(tablero, cont_der, cont_izq, 6) != 0 && jugadores[0].get_contador() >= 5) {
 				eleccion_ficha = 6;
-				ETSIDI::play("bin/sounds/6.wav");
+				play("bin/sonidos/6.wav");
 			}
-			else if (gesto == 9) {
+			else if (gesto->get_Gesto() == 9 && this->jugadores[turno].posibilidad_poner(tablero, cont_der, cont_izq, 7) != 0 && jugadores[0].get_contador() >= 6) {
 				eleccion_ficha = 7;
-				ETSIDI::play("bin/sounds/7.wav");
+				play("bin/sonidos/7.wav");
 			}
 		}
 		else if (eleccion != 0 && eleccion_ficha != 0 && eleccion_lado == 0) {
-			do {
-				gesto = g_tab.get_gesture();
-			} while (gesto != 6 && gesto != 7);
-
-			if (gesto == 6) {
-				eleccion_lado = 2;
-				ETSIDI::play("bin/sounds/select.wav");
+			gesto->identificar_gesto();
+			if (gesto->get_Gesto() == 6 && ((this->jugadores[turno].posibilidad_poner(tablero, cont_der, cont_izq, eleccion_ficha) == 2) || (this->jugadores[turno].posibilidad_poner(tablero, cont_der, cont_izq, eleccion_ficha) == 3))) {
+				eleccion_lado = 2; // Izquierda
+				movimiento_controlado = 0;
+				play("bin/sonidos/select.wav");
 			}
-			else if (gesto == 7) {
-				eleccion_lado = 1;
-				ETSIDI::play("bin/sounds/select.wav");
+			else if (gesto->get_Gesto() == 7 && ((this->jugadores[turno].posibilidad_poner(tablero, cont_der, cont_izq, eleccion_ficha) == 1) || (this->jugadores[turno].posibilidad_poner(tablero, cont_der, cont_izq, eleccion_ficha) == 3))) {
+				eleccion_lado = 1; // Derecha
+				movimiento_controlado = 0;
+				play("bin/sonidos/select.wav");
 			}
-			else {
-				eleccion_ficha = 0; // Restablecer elección ficha si el gesto es inválido
+			else if (gesto->get_Gesto() == 0) {
+				eleccion_ficha = 0;
+				play("bin/sonidos/select.wav");
 			}
 		}
 	}
 }
 
-
-
 void Tablero::partida_nueva() {
+	primer_movimiento = 0;
+	movimiento_controlado = 0;
 	inicio = 0;
+	fin = 0;
+	sonido_final = 0;
+	eleccion = 0;
+	eleccion_ficha = 0;
+	eleccion_lado = 0;
+	turno = -1;
+	cont_der = 27;
+	cont_izq = 27;
+	for (int i = 0; i < 55; i++)
+		tablero[i].cambiar_ficha();
+	for (int i = 0; i < 4; i++)
+		this->jugadores[i].vaciar_contenido();
 }
 
 // Esta función sirve para repartir las fichas al comienza de la partida
@@ -352,60 +311,31 @@ void Tablero::reparto_fichas() {
 		this->jugadores[2].cambiar_ficha(i, valores[i + 14]);
 		this->jugadores[3].cambiar_ficha(i, valores[i + 21]);
 	}
+	// Otorgamos el turno al que tenga la ficha más alta, el 6 doble, de identificador 28
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 7; j++) {
+			if (this->jugadores[i].get_ficha(j).get_id() == 28) {
+				turno = i;
+				return;
+			}
+		}
+	}
 }
 
 // Esta función determina quien tiene la ficha más alta y empieza a jugar
 void Tablero::primer_turno() {
-	int max = 0;
-	for (int i = 0; i < 7; i++) {
-		if (this->jugadores[0].get_ficha(i).get_id() > max) {
-			max = this->jugadores[0].get_ficha(i).get_id();
-			turno = 0; // El turno del jugador 1 lo simbolizo con el numero 0
-		}
-		if (this->jugadores[1].get_ficha(i).get_id() > max) {
-			max = this->jugadores[1].get_ficha(i).get_id();
-			turno = 1; // El turno del jugador 2 lo simbolizo con el numero 1
-		}
-		if (this->jugadores[2].get_ficha(i).get_id() > max) {
-			max = this->jugadores[2].get_ficha(i).get_id();
-			turno = 2; // El turno del jugador 3 lo simbolizo con el numero 2
-		}
-		if (this->jugadores[3].get_ficha(i).get_id() > max) {
-			max = this->jugadores[3].get_ficha(i).get_id();
-			turno = 3; // El turno del jugador 4 lo simbolizo con el numero 3
-		}
-	}
-
-	// Además, el primer turno es siempre el mismo ya que esta obligado a poner la ficha más alta
-	for (int i = 0; i < 7; i++) {
-		if (this->jugadores[0].get_ficha(i).get_id() == max) {
-			tablero[27].cambiar_ficha(max); // Coloca la ficha en el tablero
-			this->jugadores[0].cambiar_ficha(i); // le quita la ficha al jugador
-			return;
-		}
-		if (this->jugadores[1].get_ficha(i).get_id() == max) {
-			tablero[27].cambiar_ficha(max);
-			this->jugadores[1].cambiar_ficha(i);
-			return;
-		}
-		if (this->jugadores[2].get_ficha(i).get_id() == max) {
-			tablero[27].cambiar_ficha(max);
-			this->jugadores[2].cambiar_ficha(i);
-			return;
-		}
-		if (this->jugadores[3].get_ficha(i).get_id() == max) {
-			tablero[27].cambiar_ficha(max);
-			this->jugadores[3].cambiar_ficha(i);
-			return;
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 7; j++) {
+			if (this->jugadores[i].get_ficha(j).get_id() == 28) {
+				tablero[27].cambiar_ficha(28); // Coloca la ficha en el tablero
+				this->jugadores[i].cambiar_ficha(j); // le quita la ficha al jugador
+				return;
+			}
 		}
 	}
 }
 
-void Tablero::dibuja() {
-	gluLookAt(20, 20, 53,  // posicion del ojo
-		20, 20, 0,      // hacia que punto mira  (0,0,0) 
-		0.0, 1.0, 0);      // definimos hacia arriba (eje Y)
-
+void Tablero::dibuja(int* modo) {
 	// Pintamos el tablero
 	glDisable(GL_LIGHTING);
 	glEnable(GL_TEXTURE_2D);
@@ -424,14 +354,22 @@ void Tablero::dibuja() {
 	// Pintamos el turno
 	glDisable(GL_LIGHTING);
 	glEnable(GL_TEXTURE_2D);
-	if (turno == 0) 
+	if (turno == 0 && fin == 0)
 		glBindTexture(GL_TEXTURE_2D, getTexture("bin/imagenes/Turno1.png").id);
-	else if (turno == 1)
+	else if (turno == 0 && fin == 1)
+		glBindTexture(GL_TEXTURE_2D, getTexture("bin/imagenes/Ganador1.png").id);
+	else if (turno == 1 && fin == 0)
 		glBindTexture(GL_TEXTURE_2D, getTexture("bin/imagenes/Turno2.png").id);
-	else if (turno == 2)
+	else if (turno == 1 && fin == 1)
+		glBindTexture(GL_TEXTURE_2D, getTexture("bin/imagenes/Ganador2.png").id);
+	else if (turno == 2 && fin == 0)
 		glBindTexture(GL_TEXTURE_2D, getTexture("bin/imagenes/Turno3.png").id);
-	else if (turno == 3)
+	else if (turno == 2 && fin == 1)
+		glBindTexture(GL_TEXTURE_2D, getTexture("bin/imagenes/Ganador3.png").id);
+	else if (turno == 3 && fin == 0)
 		glBindTexture(GL_TEXTURE_2D, getTexture("bin/imagenes/Turno4.png").id);
+	else if (turno == 3 && fin == 1)
+		glBindTexture(GL_TEXTURE_2D, getTexture("bin/imagenes/Ganador4.png").id);
 	else
 		glBindTexture(GL_TEXTURE_2D, getTexture("bin/imagenes/negro.png").id);
 	glDisable(GL_LIGHTING);
@@ -448,14 +386,36 @@ void Tablero::dibuja() {
 	// Pintamos las elecciones
 	glDisable(GL_LIGHTING);
 	glEnable(GL_TEXTURE_2D);
-	if (turno == 0) {
-		if (eleccion == 0)
-			glBindTexture(GL_TEXTURE_2D, getTexture("bin/imagenes/Poner-Pasar.png").id);
-		else if (eleccion_ficha == 0)
+	if (turno == 0 && primer_movimiento == 1 && fin == 0 && movimiento_controlado==1) {
+		if (eleccion == 0 && *modo == 1)
+			glBindTexture(GL_TEXTURE_2D, getTexture("bin/imagenes/Poner-Pasar_raton.png").id);
+		else if (eleccion == 0 && *modo == 2)
+			glBindTexture(GL_TEXTURE_2D, getTexture("bin/imagenes/Poner-Pasar_gestos.png").id);
+		else if (eleccion_ficha == 0 && *modo == 1)
 			glBindTexture(GL_TEXTURE_2D, getTexture("bin/imagenes/negro.png").id);
-		else
-			glBindTexture(GL_TEXTURE_2D, getTexture("bin/imagenes/Izq-Dcha.png").id);
+		else if (eleccion_ficha == 0 && *modo == 2 && jugadores[0].get_contador() == 6)
+			glBindTexture(GL_TEXTURE_2D, getTexture("bin/imagenes/fichas_gestos_7.png").id);
+		else if (eleccion_ficha == 0 && *modo == 2 && jugadores[0].get_contador() == 5)
+			glBindTexture(GL_TEXTURE_2D, getTexture("bin/imagenes/fichas_gestos_6.png").id);
+		else if (eleccion_ficha == 0 && *modo == 2 && jugadores[0].get_contador() == 4)
+			glBindTexture(GL_TEXTURE_2D, getTexture("bin/imagenes/fichas_gestos_5.png").id);
+		else if (eleccion_ficha == 0 && *modo == 2 && jugadores[0].get_contador() == 3)
+			glBindTexture(GL_TEXTURE_2D, getTexture("bin/imagenes/fichas_gestos_4.png").id);
+		else if (eleccion_ficha == 0 && *modo == 2 && jugadores[0].get_contador() == 2)
+			glBindTexture(GL_TEXTURE_2D, getTexture("bin/imagenes/fichas_gestos_3.png").id);
+		else if (eleccion_ficha == 0 && *modo == 2 && jugadores[0].get_contador() == 1)
+			glBindTexture(GL_TEXTURE_2D, getTexture("bin/imagenes/fichas_gestos_2.png").id);
+		else if (eleccion_ficha == 0 && *modo == 2 && jugadores[0].get_contador() == 0)
+			glBindTexture(GL_TEXTURE_2D, getTexture("bin/imagenes/fichas_gestos_1.png").id);
+		else if (eleccion_lado == 0 && *modo == 1)
+			glBindTexture(GL_TEXTURE_2D, getTexture("bin/imagenes/Izq-Dcha_raton.png").id);
+		else if (eleccion_lado == 0 && *modo == 2)
+			glBindTexture(GL_TEXTURE_2D, getTexture("bin/imagenes/Izq-Dcha_gestos.png").id);
 	}
+	else if (fin == 1 && *modo == 1)
+		glBindTexture(GL_TEXTURE_2D, getTexture("bin/imagenes/volver_menu_raton.png").id);
+	else if (fin == 1 && *modo == 2)
+		glBindTexture(GL_TEXTURE_2D, getTexture("bin/imagenes/volver_menu_gestos.png").id);
 	else
 		glBindTexture(GL_TEXTURE_2D, getTexture("bin/imagenes/negro.png").id);
 	glDisable(GL_LIGHTING);
@@ -468,6 +428,17 @@ void Tablero::dibuja() {
 	glEnd();
 	glEnable(GL_LIGHTING);
 	glDisable(GL_TEXTURE_2D);
+
+	// Dibujamos un borde rojo sobre la ficha elegida
+	if (eleccion_ficha != 0 && turno == 0 && fin == 0) {
+		glBegin(GL_POLYGON);
+		glColor3ub(255, 0, 0);
+		glVertex3f(8.7 + 2.7 * (eleccion_ficha - 1), 6.2, 0.9);
+		glVertex3f(10.8 + 2.7 * (eleccion_ficha - 1), 6.2, 0.9);
+		glVertex3f(10.8 + 2.7 * (eleccion_ficha - 1), 9.8, 0.9);
+		glVertex3f(8.7 + 2.7 * (eleccion_ficha - 1), 9.8, 0.9);
+		glEnd();
+	}
 
 	// Pintamos las fichas del tablero
 	for (int i = cont_izq; i < cont_der + 1; i++) {
@@ -614,7 +585,7 @@ void Tablero::dibuja() {
 				glTexCoord2d(1, 0);		glVertex3f(24.8, 19.05, 1);
 				glTexCoord2d(0, 0);		glVertex3f(23.3, 19.05, 1);
 			}
-			else {
+			else if (i >= 53 && i < 55) {
 				tablero[i].dibuja(tablero[i].get_lado(), 'h');
 				glDisable(GL_LIGHTING);
 				glBegin(GL_POLYGON);
@@ -633,4 +604,11 @@ void Tablero::dibuja() {
 	// Pintamos las fichas de cada jugador
 	for (int i = 0; i < 4; i++)
 		jugadores[i].dibuja(i);
+
+	if (fin == 1 && sonido_final == 0) {
+		play("bin/sonidos/win.wav");
+		sonido_final = 1;
+	}
+	if (turno == 0 && primer_movimiento == 1 && eleccion == 0 && eleccion_ficha == 0 && eleccion_lado == 0 && movimiento_controlado == 0)
+		movimiento_controlado = 1;
 }

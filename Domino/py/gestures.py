@@ -33,7 +33,7 @@ gestures_dict = {
     7: 'right'
 }
 
-filepath='communication.txt'
+filepath='py/communication.txt'
 def send_message_to_cpp(message, filepath):
     with open(filepath, 'w') as f:
         f.write(str(message))
@@ -79,6 +79,8 @@ last_update_time = time.time()
 gesture_duration = 0.5  # Duración mínima para que un gesto sea válido
 gesture_timestamp = time.time()  # Marca de tiempo cuando se detecta un gesto por primera vez
 gestures_detected = []  # Lista para almacenar los gestos detectados por cada mano
+stable_gesture = None  # Gesto estable que ha cumplido el tiempo
+stable_gesture_time = 0  # Marca de tiempo inicializada como 0
 
 # Bucle de captura de video y detección de gestos
 while True:
@@ -92,7 +94,6 @@ while True:
     frame.flags.writeable = True
     frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
 
-    gesture = None  
     gestures_detected.clear() 
 
     if results.multi_hand_landmarks:
@@ -101,20 +102,32 @@ while True:
             landmarks = process_landmarks(frame, hand_landmarks)
             gesture_index = gesture_classifier(landmarks)
 
-           
             gestures_detected.append(gesture_index)
 
-           
             if gesture_index != last_gesture:
                 last_gesture = gesture_index
                 gesture_timestamp = current_time
 
-    
+    # Verificar gesto detectado
     detected_gesture = get_gesture(gestures_detected, current_time, gesture_timestamp, gesture_duration)
+
+    # Validar si el gesto se mantiene estable
     if detected_gesture is not None:
-        #print(detected_gesture)
-        send_message_to_cpp(detected_gesture, filepath)
-        #time.sleep(0.1)
+        if stable_gesture is None or stable_gesture != detected_gesture:
+            # Iniciar el temporizador para el nuevo gesto
+            stable_gesture = detected_gesture
+            stable_gesture_time = current_time
+        elif current_time - stable_gesture_time >= gesture_duration:
+            # El gesto es válido después de 0.7 segundos
+            #print(stable_gesture)
+            send_message_to_cpp(stable_gesture, filepath);
+            stable_gesture = None  # Reiniciar para evitar impresiones repetidas
+            stable_gesture_time = 0  # Resetear el tiempo
+    else:
+        # Reiniciar el gesto estable si no hay un gesto detectado
+        stable_gesture = None
+        stable_gesture_time = 0
+
     # Mostrar el frame
     #cv2.imshow("JARI Video Capture", frame)
 

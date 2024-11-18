@@ -7,7 +7,7 @@ class GestureClassifier(object):
         self,
         model_path = os.path.join(os.path.dirname(__file__), 'model/gestures_classifier.tflite'),
         num_threads=1,
-        confidence=0.9,
+        confidence=0.5,
         smoothing_window_size=5
     ):
         # Cargar el modelo TFLite y preparar el intérprete

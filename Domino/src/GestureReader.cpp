@@ -1,59 +1,53 @@
 #include "GestureReader.h"
-#include <fstream>
-#include <iostream>
-#include <stdexcept>
-#include <string>
-#include <chrono>
-#include <thread>
-#include <sys/stat.h>  
 
 GestureReader::GestureReader() {
+    gesto = -1;
     clearFile();
 }
 
 void GestureReader::clearFile() {
-    std::ofstream clearFile(filepath, std::ofstream::trunc);
-    clearFile.close();
+    ofstream clearFile(filepath, ofstream::trunc); // vacio el archivo
+    clearFile.close(); // cierro el archivo
 }
 
 bool GestureReader::isFileModified() {
-    struct stat fileInfo;
+    struct stat fileInfo; // Sirve para saber si el archivo ha sido modificado por Python
+    // Llama a stat para obtener información del archivo
     if (stat(filepath.c_str(), &fileInfo) == 0) {
-        static time_t lastModified = fileInfo.st_mtime;
+        // Creamos una variable static que conserva su valor entre llamadas sucesivas al método
+        static time_t lastModified = fileInfo.st_mtime; // Solo se ejecuta la primera vez
+        // Compara la fecha de modificación actual con la última conocida
         if (fileInfo.st_mtime != lastModified) {
-            lastModified = fileInfo.st_mtime;
-            return true;
+            lastModified = fileInfo.st_mtime; // Actualiza la última fecha conocida
+            return true; // Devuelve true si el archivo si fue modificado
         }
     }
-    return false;
+    return false; // Devuelve false si el archivo no fue modificado
 }
 
-int GestureReader::get_gesture() {
-    int gesture = -1;
-    while (gesture == -1) {
+void GestureReader::identificar_gesto() {
+    gesto = -1;
+    clearFile();
+    while (gesto == -1) {
         if (isFileModified()) {
-            std::ifstream file(filepath);
+            ifstream file(filepath); // Abre el archivo en modo lectura
             if (file.is_open()) {
-                std::string line;
-                std::getline(file, line);
-                file.close();
-
+                string line;
+                getline(file, line); // Lee la primera línea del archivo
+                file.close(); // Cierra el archivo después de leer
                 if (!line.empty()) {
                     try {
-                        gesture = std::stoi(line);
-                        clearFile();  // Limpiar el archivo después de leer el gesto
+                        gesto = stoi(line); // Convertimos la línea leída a un número entero
+                        clearFile();  // Limpia el archivo después de leer el gesto
                     }
-                    catch (const std::invalid_argument& e) {
-                        std::cerr << "Error de conversión: " << e.what() << std::endl;
+                    catch (const invalid_argument& e) { // Error de conversión
+                        cout << "Error de conversión: " << e.what() << endl;
                     }
                 }
             }
         }
-
-        
-        if (gesture == -1) {
-            std::this_thread::sleep_for(std::chrono::milliseconds(50)); 
+        if (gesto == -1) {
+            this_thread::sleep_for(std::chrono::milliseconds(50)); 
         }
     }
-    return gesture;
 }

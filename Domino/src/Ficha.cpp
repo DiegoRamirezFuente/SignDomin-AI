@@ -1,22 +1,6 @@
 #include <iostream>
 #include "Ficha.h"
 
-int Ficha::get_id() {
-	return identificador;
-}
-
-int Ficha::get_num1() {
-	return numero1;
-}
-
-int Ficha::get_num2() {
-	return numero2;
-}
-
-int Ficha::get_lado() {
-	return lado;
-}
-
 void Ficha::cambiar_ficha(int id, int lado) {
 	switch (id) {
 	case 1:
