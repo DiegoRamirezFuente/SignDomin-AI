@@ -1,28 +1,32 @@
 #pragma once
 #include "Tablero.h"
-#include "GestureReader.h"
+#include <iostream>
+#include <fstream>
+#include <string>
 
 class Coordinador {
 private:
-	int modo;
 	int dificultad; // Para elegir entre Fácil, Intermedio o Difícil
 	Tablero tablero; // El tablero, el cual controla todo el transcurso de la partida
-	enum Estado { MENU, INSTRUCCIONES, OPCIONES, JUEGO };
+	enum Estado {MENU, INSTRUCCIONES, JUEGO};
 	Estado estado;
-	GestureReader gesto; // Para controlar los gestos realizados
+
+	// Crear y abrir el archivo CSV
+	//ofstream archivo;
 public:
 	Coordinador();
 	~Coordinador();
-	int get_Modo() { return modo; }
 
-	// FUNCIONES RELACIONADAS CON EL CONTROL DE LAS ELECCIONES DEL USUARIO
+	// FUNCIONES RELACIONADAS CON EL MENU
 	void control_Raton(int x, int y);
-	void control_Gestos();
 
-	// FUNCIÓN RELACIONADA CON EL MOVIMIENTO DE LAS PIEZAS EN EL TABLERO
+	// para controlar el desarrollo de la partida
 	void partida();
 
 	// FUNCIONES RELACIONADAS CON EL MODO GRÁFICO
 	void dibuja();
 	void dibuja_Menu();
+	void dibuja_Instrucciones();
+
+
 };

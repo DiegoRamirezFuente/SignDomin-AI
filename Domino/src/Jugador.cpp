@@ -6,9 +6,17 @@ Jugador::Jugador() {
 		fichas[i].cambiar_ficha();
 }
 
+int Jugador::get_contador() {
+	return contador;
+}
+
+Ficha Jugador::get_ficha(int i) {
+	return fichas[i];
+}
+
 void Jugador::vaciar_contenido() {
 	contador = -1;
-	for (int i = 0; i < 7; i++)
+	for (int i = 0; i < 28; i++)
 		fichas[i].cambiar_ficha();
 }
 
@@ -25,11 +33,17 @@ void Jugador::cambiar_ficha(int pos, int valor) {
 	}
 }
 
+void Jugador::anadir_ficha(int valor) {
+	fichas[++contador].cambiar_ficha(valor);
+}
+
 // Esta función devuelve un 1 si el jugador se ha quedado sin fichas
 int Jugador::sin_fichas() {
-	if (contador == -1)
-		return 1;
-	return 0;
+	for (int i = 0; i < contador + 1; i++) {
+		if (fichas[i].get_id() != 0)
+			return 0;
+	}
+	return 1;
 }
 
 // Esta función comprueba si el jugador puede poner ficha
@@ -78,6 +92,7 @@ int Jugador::posibilidad_poner(Ficha tablero[], int cont_der, int cont_izq, int 
 }
 
 void Jugador::juego_IA(Ficha tablero[], int cont_der, int cont_izq, int* eleccion, int* eleccion_ficha, int* eleccion_lado, int dificultad) {
+	int aux = 0;
 	if (posibilidad_poner(tablero, cont_der, cont_izq) == 0) {
 		*eleccion = 2; // Si no puede poner, pasa/roba
 		return;
@@ -86,11 +101,9 @@ void Jugador::juego_IA(Ficha tablero[], int cont_der, int cont_izq, int* eleccio
 	if (dificultad == 1)
 		modo_facil(tablero, cont_der, cont_izq, eleccion_ficha, eleccion_lado);
 	else if (dificultad == 2)
-		modo_normal(tablero, cont_der, cont_izq, eleccion_ficha, eleccion_lado);
+		modo_intermedio(tablero, cont_der, cont_izq, eleccion_ficha, eleccion_lado);
 	else if (dificultad == 3)
 		modo_dificil(tablero, cont_der, cont_izq, eleccion_ficha, eleccion_lado);
-	else if (dificultad == 4)
-		modo_extremo(tablero, cont_der, cont_izq, eleccion_ficha, eleccion_lado);
 }
 
 void Jugador::modo_facil(Ficha tablero[], int cont_der, int cont_izq, int* eleccion_ficha, int* eleccion_lado) {
@@ -110,107 +123,107 @@ void Jugador::modo_facil(Ficha tablero[], int cont_der, int cont_izq, int* elecc
 	}
 }
 
-void Jugador::modo_normal(Ficha tablero[], int cont_der, int cont_izq, int* eleccion_ficha, int* eleccion_lado) {
-	int repeticiones[7][2] = { 0 };
-	int prioridad[7] = { 0,1,2,3,4,5,6 };
+void Jugador::modo_intermedio(Ficha tablero[], int cont_der, int cont_izq, int* eleccion_ficha, int* eleccion_lado) {
+	int repeticiones[7][2] = {0};
+	int prioridad[7] = {0,1,2,3,4,5,6};
 
 	// Cuenta cuantas veces aparece cada número en el tablero
 	for (int i = cont_izq; i < cont_der + 1; i++) {
-		switch (tablero[i].get_num1()) {
-		case 1:
-			repeticiones[1][0] += 1;
-			break;
-		case 2:
-			repeticiones[2][0] += 1;
-			break;
-		case 3:
-			repeticiones[3][0] += 1;
-			break;
-		case 4:
-			repeticiones[4][0] += 1;
-			break;
-		case 5:
-			repeticiones[5][0] += 1;
-			break;
-		case 6:
-			repeticiones[6][0] += 1;
-			break;
-		default:
-			repeticiones[0][0] += 1;
-			break;
+		switch (tablero[i].get_num1()){
+			case 1:
+				repeticiones[1][0] += 1;
+				break;
+			case 2:
+				repeticiones[2][0] += 1;
+				break;
+			case 3:
+				repeticiones[3][0] += 1;
+				break;
+			case 4:
+				repeticiones[4][0] += 1;
+				break;
+			case 5:
+				repeticiones[5][0] += 1;
+				break;
+			case 6:
+				repeticiones[6][0] += 1;
+				break;
+			default:
+				repeticiones[0][0] += 1;
+				break;
 		}
 		switch (tablero[i].get_num2()) {
-		case 1:
-			repeticiones[1][0] += 1;
-			break;
-		case 2:
-			repeticiones[2][0] += 1;
-			break;
-		case 3:
-			repeticiones[3][0] += 1;
-			break;
-		case 4:
-			repeticiones[4][0] += 1;
-			break;
-		case 5:
-			repeticiones[5][0] += 1;
-			break;
-		case 6:
-			repeticiones[6][0] += 1;
-			break;
-		default:
-			repeticiones[0][0] += 1;
-			break;
+			case 1:
+				repeticiones[1][0] += 1;
+				break;
+			case 2:
+				repeticiones[2][0] += 1;
+				break;
+			case 3:
+				repeticiones[3][0] += 1;
+				break;
+			case 4:
+				repeticiones[4][0] += 1;
+				break;
+			case 5:
+				repeticiones[5][0] += 1;
+				break;
+			case 6:
+				repeticiones[6][0] += 1;
+				break;
+			default:
+				repeticiones[0][0] += 1;
+				break;
 		}
 	}
 
 	// Cuenta cuantas veces aparece cada número en las fichas del propio jugador
 	for (int i = 0; i < contador + 1; i++) {
 		switch (fichas[i].get_num1()) {
-		case 1:
-			repeticiones[1][1] += 1;
-			break;
-		case 2:
-			repeticiones[2][1] += 1;
-			break;
-		case 3:
-			repeticiones[3][1] += 1;
-			break;
-		case 4:
-			repeticiones[4][1] += 1;
-			break;
-		case 5:
-			repeticiones[5][1] += 1;
-			break;
-		case 6:
-			repeticiones[6][1] += 1;
-			break;
-		default:
-			repeticiones[0][1] += 1;
-			break;
+			case 1:
+				repeticiones[1][1] += 1;
+				break;
+			case 2:
+				repeticiones[2][1] += 1;
+				break;
+			case 3:
+				repeticiones[3][1] += 1;
+				break;
+			case 4:
+				repeticiones[4][1] += 1;
+				break;
+			case 5:
+				repeticiones[5][1] += 1;
+				break;
+			case 6:
+				repeticiones[6][1] += 1;
+				break;
+			default:
+				repeticiones[0][1] += 1;
+				break;
 		}
 		switch (fichas[i].get_num2()) {
-		case 1:
-			repeticiones[1][1] += 1;
-			break;
-		case 2:
-			repeticiones[2][1] += 1;
-			break;
-		case 3:
-			repeticiones[3][1] += 1;
-			break;
-		case 4:
-			repeticiones[4][1] += 1;
-			break;
-		case 5:
-			repeticiones[5][1] += 1;
-			break;
-		case 6:
-			repeticiones[6][1] += 1;
-			break;
-		default:
-			repeticiones[0][1] += 1;
-			break;
+			case 1:
+				repeticiones[1][1] += 1;
+				break;
+			case 2:
+				repeticiones[2][1] += 1;
+				break;
+			case 3:
+				repeticiones[3][1] += 1;
+				break;
+			case 4:
+				repeticiones[4][1] += 1;
+				break;
+			case 5:
+				repeticiones[5][1] += 1;
+				break;
+			case 6:
+				repeticiones[6][1] += 1;
+				break;
+			default:
+				repeticiones[0][1] += 1;
+				break;
 		}
 	}
 
@@ -297,24 +310,6 @@ void Jugador::modo_dificil(Ficha tablero[], int cont_der, int cont_izq, int* ele
 	}
 }
 
-void Jugador::modo_extremo(Ficha tablero[], int cont_der, int cont_izq, int* eleccion_ficha, int* eleccion_lado) {
-	int aux = 0;
-	for (int i = 0; i < 28; i++) {
-		aux = posibilidad_poner(tablero, cont_der, cont_izq, i + 1);
-		if (aux == 1 || aux == 3) { // Puede poner por la derecha
-			*eleccion_ficha = i + 1;
-			*eleccion_lado = 1;
-			return;
-		}
-		if (aux == 2) { // Puede poner por la derecha
-			*eleccion_ficha = i + 1;
-			*eleccion_lado = 2;
-			return;
-		}
-	}
-}
-
-
 void Jugador::dibuja(int jugador) {
 	for (int i = 0; i < contador + 1; i++) {
 		glDisable(GL_LIGHTING);
@@ -330,7 +325,7 @@ void Jugador::dibuja(int jugador) {
 			glTexCoord2d(0, 0);		glVertex3f(9 + 2.7 * i, 9.5, 1);
 		}
 		if (jugador == 1) {
-			glBindTexture(GL_TEXTURE_2D, getTexture("bin/imagenes/fichaocultavertical.png").id);
+			glBindTexture(GL_TEXTURE_2D, getTexture("imagenes/fichaocultavertical.png").id);
 			glDisable(GL_LIGHTING);
 			glBegin(GL_POLYGON);
 			glColor3f(1, 1, 1);
@@ -340,7 +335,7 @@ void Jugador::dibuja(int jugador) {
 			glTexCoord2d(0, 0);		glVertex3f(20 - 2.7 * i, 38, 1);
 		}
 		if (jugador == 2) {
-			glBindTexture(GL_TEXTURE_2D, getTexture("bin/imagenes/fichaocultahorizontal.png").id);
+			glBindTexture(GL_TEXTURE_2D, getTexture("imagenes/fichaocultahorizontal.png").id);
 			glDisable(GL_LIGHTING); 
 			glBegin(GL_POLYGON);
 			glColor3f(1, 1, 1);
@@ -350,7 +345,7 @@ void Jugador::dibuja(int jugador) {
 			glTexCoord2d(0, 0);		glVertex3f(-3.5, 26 - 2.3 * i, 1);
 		}
 		if (jugador == 3) {
-			glBindTexture(GL_TEXTURE_2D, getTexture("bin/imagenes/fichaocultahorizontal.png").id);
+			glBindTexture(GL_TEXTURE_2D, getTexture("imagenes/fichaocultahorizontal.png").id);
 			glDisable(GL_LIGHTING);
 			glBegin(GL_POLYGON);
 			glColor3f(1, 1, 1);
