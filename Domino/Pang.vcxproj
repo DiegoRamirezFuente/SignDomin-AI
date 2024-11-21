@@ -25,14 +25,12 @@
     <ClCompile Include="src\Coordinador.cpp" />
     <ClCompile Include="src\Domino.cpp" />
     <ClCompile Include="src\Ficha.cpp" />
-    <ClCompile Include="src\GestureReader.cpp" />
     <ClCompile Include="src\Jugador.cpp" />
     <ClCompile Include="src\Tablero.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Coordinador.h" />
     <ClInclude Include="src\Ficha.h" />
-    <ClInclude Include="src\GestureReader.h" />
     <ClInclude Include="src\Jugador.h" />
     <ClInclude Include="src\Tablero.h" />
   </ItemGroup>

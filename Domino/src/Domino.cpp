@@ -1,29 +1,16 @@
 #include "Coordinador.h"
 
 Coordinador domino;
-void OnDraw(void); // Esta funcion sera llamada para dibujar
-void OnTimer(int value); // Esta funcion sera llamada cuando transcurra una temporizacion
+int dificultad = 0;
+
+// los callback, funciones que seran llamadas automaticamente por la glut
+// cuando sucedan eventos
+// NO HACE FALTA LLAMARLAS EXPLICITAMENTE
+void OnDraw(void); // esta funcion sera llamada para dibujar
+void OnTimer(int value); // esta funcion sera llamada cuando transcurra una temporizacion
 void clickraton(int boton, int estado, int x, int y); // Clik de la posicion
 
-// El thread 1 ejecuta la función que enlaza con Python
-void runPython() {
-	if (system("python \"../Domino/py/gestures.py\"") != 0)
-		exit(-1);
-}
-
-// El thread 2 ejecuta la función que controla el movimiento del jugador
-void control_juego() {
-	if (domino.get_Modo() == 1)
-		glutMouseFunc(clickraton);
-	else {
-		while (1)
-			domino.control_Gestos();
-	}
-}
-
 int main(int argc, char* argv[]){
-	thread py(runPython);
-
 	// Antes de comenzar con el desarrollo del juego, inicializamos el gestor de ventanas GLUT y creamos la ventana
 	glutInit(&argc, argv);
 	glutInitWindowSize(1000, 700);
@@ -41,10 +28,11 @@ int main(int argc, char* argv[]){
 	// Registrar los callbacks
 	glutDisplayFunc(OnDraw);
 	glutTimerFunc(25, OnTimer, 0); //le decimos que dentro de 25ms llame 1 vez a la funcion OnTimer()
-	thread control(control_juego);
+	glutMouseFunc(clickraton);
 
 	//pasarle el control a GLUT,que llamara a los callbacks
 	glutMainLoop();
+
 	return 0;
 }
 
@@ -56,7 +44,7 @@ void OnDraw(void)
 	//Para definir el punto de vista
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	domino.dibuja();
+	//domino.dibuja();
 
 	//no borrar esta linea ni poner nada despues
 	glutSwapBuffers();
