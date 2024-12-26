@@ -632,3 +632,17 @@ void Ficha::dibuja(int lado, char pos) {
 			break;
 	}
 }
+
+void Ficha::set_num1(int num1) {
+	numero1 = num1;
+}
+
+void Ficha::set_num2(int num2) {
+	numero2 = num2;
+}
+
+void Ficha::default_id() {
+	identificador = 0;
+	numero1 = -1;
+	numero2 = -1;
+}

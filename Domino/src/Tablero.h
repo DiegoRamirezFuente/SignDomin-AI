@@ -9,8 +9,8 @@ private:
 	int movimiento_controlado;
 	int turno; // Variable que sirve para saber a quien le toca jugar
 	int inicio; // Para saber cuando empieza una nueva partida
-	int fin;
-
+	int fin; // Para saber cuando ha terminado la partida
+	
 	// CONJUNTO DE VARIABLES PARA REGULAR EL TABLERO
 	int cont_der;
 	int cont_izq;
@@ -18,6 +18,10 @@ private:
 
 	// HAY 4 JUGADORES
 	Jugador jugadores[4];
+
+	//PARA ESCRIBIR EN UN ARCHIVO
+	ofstream archivo;
+	int escribir[20];
 
 	// CONJUNTO DE VARIABLES PARA CONTROLAR LAS ELECCIONES DEL JUGADOR
 	int eleccion;
@@ -30,7 +34,6 @@ public:
 	void colocar_ficha();
 	void final_partida();
 	int get_final() { return fin; }
-	void set_final(int x) { fin = x; }
 
 	// FUNCIONES RELACIONADAS CON EL CONTROL DE LAS ELECCIONES DEL USUARIO
 	void control_Raton(int x, int y);
@@ -41,6 +44,6 @@ public:
 	void reparto_fichas();
 	void primer_turno();
 
-	// Funciones parte gráfica
+	int eleccion_final(int posicion, int lugar);
 	void dibuja(int* modo);
 };

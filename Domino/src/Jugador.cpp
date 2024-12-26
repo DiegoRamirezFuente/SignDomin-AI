@@ -78,31 +78,80 @@ int Jugador::posibilidad_poner(Ficha tablero[], int cont_der, int cont_izq, int 
 }
 
 void Jugador::juego_IA(Ficha tablero[], int cont_der, int cont_izq, int* eleccion, int* eleccion_ficha, int* eleccion_lado, int dificultad) {
-	if (posibilidad_poner(tablero, cont_der, cont_izq) == 0) {
-		*eleccion = 2; // Si no puede poner, pasa/roba
-		return;
+	if (dificultad == 1) {
+		lectura_solucion(); // Te escribe el numero del archivo en la variable numero
+		if ((numero == 0 || numero == -1) && posibilidad_poner(tablero, cont_der, cont_izq) == 0) {
+			*eleccion = 2;
+			return;
+		}
+		conversion(numero);
+		anti_errores(tablero, cont_der, cont_izq, eleccion, eleccion_ficha, eleccion_lado);
 	}
-	*eleccion = 1; // En caso de poder poner, elije poner
-	if (dificultad == 1)
-		modo_facil(tablero, cont_der, cont_izq, eleccion_ficha, eleccion_lado);
-	else if (dificultad == 2)
-		modo_normal(tablero, cont_der, cont_izq, eleccion_ficha, eleccion_lado);
-	else if (dificultad == 3)
-		modo_dificil(tablero, cont_der, cont_izq, eleccion_ficha, eleccion_lado);
-	else if (dificultad == 4)
-		modo_extremo(tablero, cont_der, cont_izq, eleccion_ficha, eleccion_lado);
+
+	else if (dificultad == 2) {
+		lectura_solucion(); // Te escribe el numero del archivo en la variable numero
+		if (numero == 0 && posibilidad_poner(tablero, cont_der, cont_izq) == 0) {
+			*eleccion = 2;
+			return;
+		}
+		conversion(numero);
+		anti_errores(tablero, cont_der, cont_izq, eleccion, eleccion_ficha, eleccion_lado);
+	}
 }
 
-void Jugador::modo_facil(Ficha tablero[], int cont_der, int cont_izq, int* eleccion_ficha, int* eleccion_lado) {
+// Esta fu´nción sirve para detectar posibles fallos de la IA
+void Jugador::anti_errores(Ficha tablero[], int cont_der, int cont_izq, int* eleccion, int* eleccion_ficha, int* eleccion_lado) {
+	// En primer lugar, si la ficha escogida por la IA es correcta, no cambiamos nada
 	int aux = 0;
+	if (pos > 0) { // Si ha escogido poner
+		aux = posibilidad_poner(tablero, cont_der, cont_izq, pos); // 0 no puede poner, 1 derecha, 2 izquierda y 3 ambas
+		if (lugar == 1) { // Si ha escogido poner por la derecha
+			if (aux == 1 || aux == 3) { // Si puedo poner por la derecha
+				*eleccion = 1;
+				*eleccion_ficha = pos;
+				*eleccion_lado = lugar;
+				return;
+			}
+			else if (aux == 2) { // Pero solo puedo poner por la izquierda
+				*eleccion = 1;
+				*eleccion_ficha = pos;
+				*eleccion_lado = 2;
+				return;
+			}
+		}
+		else if (lugar == 2) { // Si ha escogido poner por la izquierda
+			if (aux == 2 || aux == 3) { // Si puedo poner por la izquierda
+				*eleccion = 1;
+				*eleccion_ficha = pos;
+				*eleccion_lado = lugar;
+				return;
+			}
+			else if (aux == 1) { // Pero solo puedo poner por la derecha
+				*eleccion = 1;
+				*eleccion_ficha = pos;
+				*eleccion_lado = 1;
+				return;
+			}
+		}
+	}
+
+	// En caso de no poder poner esa ficha, veo si puedo poner alguna
+	if (posibilidad_poner(tablero, cont_der, cont_izq) == 0) {
+		*eleccion = 2; // Si no puedo, paso
+		return;
+	}
+
+	// Si puede poner alguna ficha, cogemos la primera, cogemos la primera posible
 	for (int i = 0; i < contador + 1; i++) {
 		aux = posibilidad_poner(tablero, cont_der, cont_izq, i + 1);
 		if (aux == 1 || aux == 3) { // Puede poner por la derecha
+			*eleccion = 1;
 			*eleccion_ficha = i + 1;
 			*eleccion_lado = 1;
 			return;
 		}
 		if (aux == 2) { // Puede poner por la izquierda
+			*eleccion = 1;
 			*eleccion_ficha = i + 1;
 			*eleccion_lado = 2;
 			return;
@@ -110,210 +159,119 @@ void Jugador::modo_facil(Ficha tablero[], int cont_der, int cont_izq, int* elecc
 	}
 }
 
-void Jugador::modo_normal(Ficha tablero[], int cont_der, int cont_izq, int* eleccion_ficha, int* eleccion_lado) {
-	int repeticiones[7][2] = { 0 };
-	int prioridad[7] = { 0,1,2,3,4,5,6 };
-
-	// Cuenta cuantas veces aparece cada número en el tablero
-	for (int i = cont_izq; i < cont_der + 1; i++) {
-		switch (tablero[i].get_num1()) {
-		case 1:
-			repeticiones[1][0] += 1;
-			break;
-		case 2:
-			repeticiones[2][0] += 1;
-			break;
-		case 3:
-			repeticiones[3][0] += 1;
-			break;
-		case 4:
-			repeticiones[4][0] += 1;
-			break;
-		case 5:
-			repeticiones[5][0] += 1;
-			break;
-		case 6:
-			repeticiones[6][0] += 1;
-			break;
-		default:
-			repeticiones[0][0] += 1;
-			break;
-		}
-		switch (tablero[i].get_num2()) {
-		case 1:
-			repeticiones[1][0] += 1;
-			break;
-		case 2:
-			repeticiones[2][0] += 1;
-			break;
-		case 3:
-			repeticiones[3][0] += 1;
-			break;
-		case 4:
-			repeticiones[4][0] += 1;
-			break;
-		case 5:
-			repeticiones[5][0] += 1;
-			break;
-		case 6:
-			repeticiones[6][0] += 1;
-			break;
-		default:
-			repeticiones[0][0] += 1;
-			break;
-		}
-	}
-
-	// Cuenta cuantas veces aparece cada número en las fichas del propio jugador
-	for (int i = 0; i < contador + 1; i++) {
-		switch (fichas[i].get_num1()) {
-		case 1:
-			repeticiones[1][1] += 1;
-			break;
-		case 2:
-			repeticiones[2][1] += 1;
-			break;
-		case 3:
-			repeticiones[3][1] += 1;
-			break;
-		case 4:
-			repeticiones[4][1] += 1;
-			break;
-		case 5:
-			repeticiones[5][1] += 1;
-			break;
-		case 6:
-			repeticiones[6][1] += 1;
-			break;
-		default:
-			repeticiones[0][1] += 1;
-			break;
-		}
-		switch (fichas[i].get_num2()) {
-		case 1:
-			repeticiones[1][1] += 1;
-			break;
-		case 2:
-			repeticiones[2][1] += 1;
-			break;
-		case 3:
-			repeticiones[3][1] += 1;
-			break;
-		case 4:
-			repeticiones[4][1] += 1;
-			break;
-		case 5:
-			repeticiones[5][1] += 1;
-			break;
-		case 6:
-			repeticiones[6][1] += 1;
-			break;
-		default:
-			repeticiones[0][1] += 1;
-			break;
-		}
-	}
-
-	// Ordenamos los números en orden de aparición
-	for (int i = 0; i < 6; i++) {
-		for (int j = 0; j < 6 - i; j++) {
-			if (repeticiones[j][0] + repeticiones[j][1] < repeticiones[j + 1][0] + repeticiones[j + 1][1]) {
-				int temp = prioridad[j];
-				prioridad[j] = prioridad[j + 1];
-				prioridad[j + 1] = temp;
-			}
-		}
-	}
-
-	// Intentamos poner pieza de forma que el número que quede en el extremo aparezca el mayor número de veces posible
-	for (int j = 0; j < 7; j++) {
-		for (int i = 0; i < contador + 1; i++) {
-			if (tablero[cont_izq].get_lado() == 0) {
-				if (tablero[cont_izq].get_num1() == fichas[i].get_num1() && (fichas[i].get_num2() == prioridad[j])) {
-					*eleccion_ficha = i + 1;
-					*eleccion_lado = 2;
-					return;
-				}
-				if (tablero[cont_izq].get_num1() == fichas[i].get_num2() && (fichas[i].get_num1() == prioridad[j])) {
-					*eleccion_ficha = i + 1;
-					*eleccion_lado = 2;
-					return;
-				}
-			}
-			if (tablero[cont_izq].get_lado() == 1) {
-				if (tablero[cont_izq].get_num2() == fichas[i].get_num1() && (fichas[i].get_num2() == prioridad[j])) {
-					*eleccion_ficha = i + 1;
-					*eleccion_lado = 2;
-					return;
-				}
-				if (tablero[cont_izq].get_num2() == fichas[i].get_num2() && (fichas[i].get_num1() == prioridad[j])) {
-					*eleccion_ficha = i + 1;
-					*eleccion_lado = 2;
-					return;
-				}
-			}
-			if (tablero[cont_der].get_lado() == 0) {
-				if (tablero[cont_der].get_num2() == fichas[i].get_num1() && (fichas[i].get_num2() == prioridad[j])) {
-					*eleccion_ficha = i + 1;
-					*eleccion_lado = 1;
-					return;
-				}
-				if (tablero[cont_der].get_num2() == fichas[i].get_num2() && (fichas[i].get_num1() == prioridad[j])) {
-					*eleccion_ficha = i + 1;
-					*eleccion_lado = 1;
-					return;
-				}
-			}
-			if (tablero[cont_der].get_lado() == 1) {
-				if (tablero[cont_der].get_num1() == fichas[i].get_num1() && (fichas[i].get_num2() == prioridad[j])) {
-					*eleccion_ficha = i + 1;
-					*eleccion_lado = 1;
-					return;
-				}
-				if (tablero[cont_der].get_num1() == fichas[i].get_num2() && (fichas[i].get_num1() == prioridad[j])) {
-					*eleccion_ficha = i + 1;
-					*eleccion_lado = 1;
-					return;
-				}
-			}
-		}
+void Jugador::conversion(int numero) {
+	// Si lugar es 2 esta a la izq, si lugar es 1 esta a la derecha
+	switch (numero)
+	{
+	case 1:
+		pos = 1;
+		lugar = 2;
+		break;
+	case 2:
+		pos = 2;
+		lugar = 2;
+		break;
+	case 3:
+		pos = 3;
+		lugar = 2;
+		break;
+	case 4:
+		pos = 4;
+		lugar = 2;
+		break;
+	case 5:
+		pos = 5;
+		lugar = 2;
+		break;
+	case 6:
+		pos = 6;
+		lugar = 2;
+		break;
+	case 7:
+		pos = 7;
+		lugar = 2;
+		break;
+	case 8:
+		pos = 1;
+		lugar = 1;
+		break;
+	case 9:
+		pos = 2;
+		lugar = 1;
+		break;
+	case 10:
+		pos = 3;
+		lugar = 1;
+		break;
+	case 11:
+		pos = 4;
+		lugar = 1;
+		break;
+	case 12:
+		pos = 5;
+		lugar = 1;
+		break;
+	case 13:
+		pos = 6;
+		lugar = 1;
+		break;
+	case 14:
+		pos = 7;
+		lugar = 1;
+		break;
+	default:
+		pos = -1;
+		lugar = -1;
+		break;
 	}
 }
 
-void Jugador::modo_dificil(Ficha tablero[], int cont_der, int cont_izq, int* eleccion_ficha, int* eleccion_lado) {
-	int aux = 0;
-	for (int i = 0; i < 28; i++) {
-		aux = posibilidad_poner(tablero, cont_der, cont_izq, i + 1);
-		if (aux == 1 || aux == 3) { // Puede poner por la derecha
-			*eleccion_ficha = i + 1;
-			*eleccion_lado = 1;
-			return;
+void Jugador::clearFile() {
+	ofstream clearFile(filepath, ofstream::trunc); // vacio el archivo
+	clearFile.close(); // cierro el archivo
+}
+
+bool Jugador::isFileModified() {
+	struct stat fileInfo; // Sirve para saber si el archivo ha sido modificado por Python
+	// Llama a stat para obtener información del archivo
+	if (stat(filepath.c_str(), &fileInfo) == 0) {
+		// Creamos una variable static que conserva su valor entre llamadas sucesivas al método
+		static time_t lastModified = fileInfo.st_mtime; // Solo se ejecuta la primera vez
+		// Compara la fecha de modificación actual con la última conocida
+		if (fileInfo.st_mtime != lastModified) {
+			lastModified = fileInfo.st_mtime; // Actualiza la última fecha conocida
+			return true; // Devuelve true si el archivo si fue modificado
 		}
-		if (aux == 2) { // Puede poner por la derecha
-			*eleccion_ficha = i + 1;
-			*eleccion_lado = 2;
-			return;
+	}
+	return false; // Devuelve false si el archivo no fue modificado
+}
+
+void Jugador::lectura_solucion() {
+	bool lectura = false;
+	while (!lectura) {
+		if (isFileModified()) {
+			ifstream file(filepath); // Abre el archivo en modo lectura
+			if (file.is_open()) {
+				string line;
+				getline(file, line); // Lee la primera línea del archivo
+				file.close(); // Cierra el archivo después de leer
+				if (!line.empty()) {
+					try {
+						numero = stoi(line); // Convertimos la línea leída a un número entero
+						lectura = true;
+						clearFile();  // Limpia el archivo después de leer el gesto
+					}
+					catch (const invalid_argument& e) { // Error de conversión
+						cout << "Error de conversión: " << e.what() << endl;
+					}
+				}
+			}
+		}
+		else {
+			this_thread::sleep_for(std::chrono::milliseconds(50)); //espera antes de volver a intentarlo
 		}
 	}
 }
-
-void Jugador::modo_extremo(Ficha tablero[], int cont_der, int cont_izq, int* eleccion_ficha, int* eleccion_lado) {
-	int aux = 0;
-	for (int i = 0; i < 28; i++) {
-		aux = posibilidad_poner(tablero, cont_der, cont_izq, i + 1);
-		if (aux == 1 || aux == 3) { // Puede poner por la derecha
-			*eleccion_ficha = i + 1;
-			*eleccion_lado = 1;
-			return;
-		}
-		if (aux == 2) { // Puede poner por la derecha
-			*eleccion_ficha = i + 1;
-			*eleccion_lado = 2;
-			return;
-		}
-	}
-}
-
 
 void Jugador::dibuja(int jugador) {
 	for (int i = 0; i < contador + 1; i++) {

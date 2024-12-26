@@ -1,11 +1,12 @@
 #include "Coordinador.h"
+#include <windows.h>
 
 Coordinador domino;
 void OnDraw(void); // Esta funcion sera llamada para dibujar
 void OnTimer(int value); // Esta funcion sera llamada cuando transcurra una temporizacion
 void clickraton(int boton, int estado, int x, int y); // Clik de la posicion
 
-// El thread 1 ejecuta la función que enlaza con Python
+// El thread ejecuta la función que enlaza con Python
 void runPython() {
 	if (system("python \"../Domino/py/gestures.py\"") != 0)
 		exit(-1);
@@ -22,8 +23,12 @@ void control_juego() {
 }
 
 int main(int argc, char* argv[]){
+	/*
+	HWND hwnd = GetConsoleWindow(); // Obtén el manejador de la ventana de consola
+    ShowWindow(hwnd, SW_HIDE);     // Oculta la ventana
+	*/
 	thread py(runPython);
-
+	
 	// Antes de comenzar con el desarrollo del juego, inicializamos el gestor de ventanas GLUT y creamos la ventana
 	glutInit(&argc, argv);
 	glutInitWindowSize(1000, 700);
@@ -40,11 +45,12 @@ int main(int argc, char* argv[]){
 
 	// Registrar los callbacks
 	glutDisplayFunc(OnDraw);
-	glutTimerFunc(25, OnTimer, 0); //le decimos que dentro de 25ms llame 1 vez a la funcion OnTimer()
+	glutTimerFunc(25, OnTimer, 0);
 	thread control(control_juego);
-
+	
 	//pasarle el control a GLUT,que llamara a los callbacks
 	glutMainLoop();
+	printf("Ventana cerrada");
 	return 0;
 }
 

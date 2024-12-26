@@ -31,12 +31,66 @@ void Tablero::partida(int dificultad) {
 	else {
 		if (fin == 0) {
 			if (turno == 0 && movimiento_controlado == 0) { // Nosotros controlamos el jugador local
-				if (eleccion == 1 && eleccion_ficha != 0 && eleccion_lado != 0)
+				if (tablero[cont_izq].get_lado() == 0) {
+					escribir[1] = tablero[cont_izq].get_num1();// numero en la izq 
+				}
+				else if (tablero[cont_izq].get_lado() == 1) {
+					escribir[1] = tablero[cont_izq].get_num2(); // numero en la izq 
+				}
+				if (tablero[cont_der].get_lado() == 0) {
+					escribir[2] = tablero[cont_der].get_num2();// numero en la drcha
+				}
+				else if (tablero[cont_der].get_lado() == 1) {
+					escribir[2] = tablero[cont_der].get_num1();// numero en la drcha
+				}
+				for (int i = 0; i <= 6; i++) {
+					escribir[3 + (2 * i)] = jugadores[turno].get_ficha(i).get_num1();
+					escribir[4 + (2 * i)] = jugadores[turno].get_ficha(i).get_num2();
+				}
+				
+				if (eleccion == 1 && eleccion_ficha != 0 && eleccion_lado != 0) {
+					escribir[0] = eleccion_final(eleccion_ficha, eleccion_lado);
 					colocar_ficha();
+				}
 				else if (eleccion == 2)
 					cambio_turno();
+
+				archivo.open("py/Jugador.txt", ios::out); //sobreescribe los datos que esten en el archivo
+				if (archivo.is_open()) {
+					for (int j = 0; j <= 16; j++) { //se escriben 16 numeros en el archivo
+						archivo << escribir[j];
+						if (j <= 15) archivo << ",";
+					}
+					archivo.close();  // Cerrar el archivo
+				}
 			}
 			else if (turno != 0) { // El jugador máquina juega solo
+				if (tablero[cont_izq].get_lado() == 0) {
+					escribir[0] = tablero[cont_izq].get_num1();// numero en la izq 
+				}
+				else if (tablero[cont_izq].get_lado() == 1) {
+					escribir[0] = tablero[cont_izq].get_num2(); // numero en la izq 
+				}
+				if (tablero[cont_der].get_lado() == 0) {
+					escribir[1] = tablero[cont_der].get_num2();// numero en la drcha
+				}
+				else if (tablero[cont_der].get_lado() == 1) {
+					escribir[1] = tablero[cont_der].get_num1();// numero en la drcha
+				}
+				for (int i = 0; i <= 6; i++) {
+					escribir[2 + (2 * i)] = jugadores[turno].get_ficha(i).get_num1();
+					escribir[3 + (2 * i)] = jugadores[turno].get_ficha(i).get_num2();
+				}
+
+				archivo.open("py/info.txt", ios::out); // Sobre escribe los datos que esten en el archivo
+				if (archivo.is_open()) {
+					for (int j = 0; j <= 15; j++) { // Se escriben 16 numeros en el archivo
+						archivo << escribir[j];
+						if (j <= 14) archivo << ",";
+					}
+					archivo.close();  // Cerrar el archivo
+				}
+
 				this->jugadores[turno].juego_IA(tablero, cont_der, cont_izq, &eleccion, &eleccion_ficha, &eleccion_lado, dificultad);
 				if (eleccion == 1)
 					colocar_ficha();
@@ -53,8 +107,8 @@ void Tablero::cambio_turno() {
 	eleccion_ficha = 0;
 	eleccion_lado = 0;
 	turno = (turno + 1) % 4;
-	
 }
+
 
 void Tablero::colocar_ficha() {
 	if (eleccion_lado == 1) { // Ponemos por la derecha
@@ -124,7 +178,7 @@ void Tablero::colocar_ficha() {
 				cambio_turno();
 			return;
 		}
-	}
+	}	
 }
 
 void Tablero::final_partida() {
@@ -135,7 +189,7 @@ void Tablero::final_partida() {
 	for (int i = 0; i < 4; i++) {
 		if (i != turno) {
 			if (this->jugadores[i].posibilidad_poner(tablero, cont_der, cont_izq) == 1)
-				return;
+				return; // Si algún jugador, que no sea el que tiene el turno, puede poner, entonces la partida continua
 		}
 	}
 	fin = 1;
@@ -147,12 +201,12 @@ void Tablero::control_Raton(int x, int y) {
 		if (eleccion == 0) {
 			if (x >= 826 && x <= 991 && y >= 223 && y <= 267 && this->jugadores[turno].posibilidad_poner(tablero, cont_der, cont_izq) == 1) {
 				eleccion = 1; // Poner
-				play("bin/sonidos/success.wav");
+				play("bin/sonidos/seleccion_ficha.wav");
 			}
 			else if (x >= 826 && x <= 991 && y >= 434 && y <= 475) {
 				movimiento_controlado = 0;
 				eleccion = 2; // Pasar
-				play("bin/sonidos/success.wav");
+				play("bin/sonidos/select.wav");
 			}
 		}
 		else if (eleccion != 0 && eleccion_ficha == 0) {
@@ -196,8 +250,10 @@ void Tablero::control_Raton(int x, int y) {
 				eleccion_lado = 1; // Derecha
 				play("bin/sonidos/select.wav");
 			}
-			else if (x < 826 || x > 991 || y < 223 || y > 475 || (y >= 267 && y <= 434))
+			else if (x < 826 || x > 991 || y < 223 || y > 475 || (y >= 267 && y <= 434)) {
 				eleccion_ficha = 0;
+				play("bin/sonidos/seleccion_ficha.wav");
+			}
 		}
 	}
 	// Reseteamos los valores de x e y para que no me influyan en jugadas posteriores
@@ -211,16 +267,15 @@ void Tablero::control_Gestos(GestureReader* gesto) {
 			gesto->identificar_gesto();
 			if (gesto->get_Gesto() == 6 && this->jugadores[turno].posibilidad_poner(tablero, cont_der, cont_izq) == 1) {
 				eleccion = 1; // Poner
-				play("bin/sonidos/success.wav");
+				play("bin/sonidos/seleccion_ficha.wav");
 			}
 			else if (gesto->get_Gesto() == 7) {
 				eleccion = 2; // Pasar
 				movimiento_controlado = 0;
-				play("bin/sonidos/pass.wav");
+				play("bin/sonidos/select.wav");
 			}
 		}
 		else if (eleccion != 0 && eleccion_ficha == 0) {
-			play("bin/sonidos/choose.wav");
 			gesto->identificar_gesto();
 			if (gesto->get_Gesto() == 1 && this->jugadores[turno].posibilidad_poner(tablero, cont_der, cont_izq, 1) != 0 && jugadores[0].get_contador() >= 0) {
 				eleccion_ficha = 1;
@@ -250,6 +305,10 @@ void Tablero::control_Gestos(GestureReader* gesto) {
 				eleccion_ficha = 7;
 				play("bin/sonidos/7.wav");
 			}
+			else if (gesto->get_Gesto() == 0) {
+				eleccion = 0;
+				play("bin/sonidos/select.wav");
+			}
 		}
 		else if (eleccion != 0 && eleccion_ficha != 0 && eleccion_lado == 0) {
 			gesto->identificar_gesto();
@@ -265,7 +324,7 @@ void Tablero::control_Gestos(GestureReader* gesto) {
 			}
 			else if (gesto->get_Gesto() == 0) {
 				eleccion_ficha = 0;
-				play("bin/sonidos/select.wav");
+				play("bin/sonidos/seleccion_ficha.wav");
 			}
 		}
 	}
@@ -386,7 +445,7 @@ void Tablero::dibuja(int* modo) {
 	// Pintamos las elecciones
 	glDisable(GL_LIGHTING);
 	glEnable(GL_TEXTURE_2D);
-	if (turno == 0 && primer_movimiento == 1 && fin == 0 && movimiento_controlado==1) {
+	if (turno == 0 && primer_movimiento == 1 && fin == 0 && movimiento_controlado == 1) {
 		if (eleccion == 0 && *modo == 1)
 			glBindTexture(GL_TEXTURE_2D, getTexture("bin/imagenes/Poner-Pasar_raton.png").id);
 		else if (eleccion == 0 && *modo == 2)
@@ -605,10 +664,59 @@ void Tablero::dibuja(int* modo) {
 	for (int i = 0; i < 4; i++)
 		jugadores[i].dibuja(i);
 
+	// Esto sirve para que el sonido de victoria suene de forma síncrona con la actualización de la pantalla
 	if (fin == 1 && sonido_final == 0) {
 		play("bin/sonidos/win.wav");
 		sonido_final = 1;
 	}
-	if (turno == 0 && primer_movimiento == 1 && eleccion == 0 && eleccion_ficha == 0 && eleccion_lado == 0 && movimiento_controlado == 0)
+	// Al igual que en el if anterior, el usuario puede empezar a seleccionar en el momento en el que se actualiza la pantalla con el jugador 1 jugando
+	if (turno == 0 && primer_movimiento == 1 && eleccion == 0 && eleccion_ficha == 0 && eleccion_lado == 0 && movimiento_controlado == 0) {
+		play("bin/sonidos/turno.wav");
 		movimiento_controlado = 1;
+	}
+}
+
+int Tablero::eleccion_final(int posicion, int lugar)
+{
+	bool tableroo;//true si es IZQ, false si es DRCHA
+	if (lugar == 1) tableroo = FALSE;
+	else tableroo = TRUE;
+
+	switch (posicion)
+	{
+		case 0:
+			return 0;
+			break;
+		case 1:
+			if (tableroo) return 1;
+			else return 8;
+			break;
+		case 2:
+			if (tableroo) return 2;
+			else return 9;
+			break;
+		case 3:
+			if (tableroo) return 3;
+			else return 10;
+			break;
+		case 4:
+			if (tableroo) return 4;
+			else return 11;
+			break;
+		case 5:
+			if (tableroo) return 5;
+			else return 12;
+			break;
+		case 6:
+			if (tableroo) return 6;
+			else return 13;
+			break;
+		case 7:
+			if (tableroo) return 7;
+			else return 14;
+			break;
+		default:
+			return 0;
+			break;
+	}
 }

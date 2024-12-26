@@ -4,7 +4,7 @@ import numpy as np
 import time
 from model_gestures import GestureClassifier
 import sys
-
+import os
 # Configuración de la cámara
 camera_id = 0
 video_height = 720
@@ -34,6 +34,7 @@ gestures_dict = {
 }
 
 filepath='py/communication.txt'
+exit_flag_path = 'py/exit_flag.txt'
 def send_message_to_cpp(message, filepath):
     with open(filepath, 'w') as f:
         f.write(str(message))
@@ -56,6 +57,11 @@ def process_landmarks(image, landmarks):
 
     return normalized_landmark_list
 
+def clear_file(filepath):
+    # Vacía el contenido del archivo
+    with open(filepath, 'w') as f:
+        f.truncate()
+        
 def get_gesture(gestures_detected, current_time, gesture_timestamp, gesture_duration):
     gesture = None
     if (len(gestures_detected) == 2 and gestures_detected[0] == 1 and gestures_detected[1] == 5) or (len(gestures_detected) == 2 and gestures_detected[0] == 5 and gestures_detected[1] == 1):
@@ -84,6 +90,13 @@ stable_gesture_time = 0  # Marca de tiempo inicializada como 0
 
 # Bucle de captura de video y detección de gestos
 while True:
+    
+    if os.path.exists(exit_flag_path) and os.path.getsize(exit_flag_path) > 0:
+        flag=np.loadtxt(exit_flag_path)
+        if flag == 0:
+            clear_file(exit_flag_path)
+            exit(1)
+            
     ret, frame = video.read()
     if not ret:
         break
