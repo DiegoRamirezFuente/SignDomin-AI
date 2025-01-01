@@ -17,7 +17,7 @@ En SignDomin-AI, los jugadores rivales utilizan diferentes enfoques de inteligen
 
   - __Agente basado en ANN:__ Este agente emplea redes neuronales artificiales para analizar el tablero y tomar decisiones estratégicas. Su comportamiento está diseñado para simular un jugador humano.
   
-  - __Agente basado en RL:__ Este agente utiliza aprendizaje por refuerzo para adaptarse y aprender durante la partida. Su estrategia evoluciona a medida que juega, ofreciendo un desafío dinámico y único en cada enfrentamiento.
+  - __Agente basado en RL:__ Este agente utiliza aprendizaje por refuerzo (Q-Learning) para adaptarse y aprender durante la partida. Su estrategia evoluciona a medida que juega, aprendiendo por su propia experiencia y observando al jugador local.
 
 ![2025-01-01 21-27-07 (2)](https://github.com/user-attachments/assets/3e562dfe-6506-4949-974b-8704e0821551)
 
