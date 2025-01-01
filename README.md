@@ -19,6 +19,8 @@ En SignDomin-AI, los jugadores rivales utilizan diferentes enfoques de inteligen
   
   - __Agente basado en RL:__ Este agente utiliza aprendizaje por refuerzo para adaptarse y aprender durante la partida. Su estrategia evoluciona a medida que juega, ofreciendo un desafío dinámico y único en cada enfrentamiento.
 
+![2025-01-01 21-27-07 (1)](https://github.com/user-attachments/assets/2cdd2e5a-b04e-481b-9c0f-a1a965e84fea)
+
 __INSTRUCCIONES DE INSTALACIÓN.__
 
 1. INSTALAR https://www.python.org/ftp/python/3.8.8/python-3.8.8-amd64.exe
