@@ -7,8 +7,8 @@ import sys
 import os
 # Configuración de la cámara
 camera_id = 0
-video_height = 720
-video_width = 720
+video_height = 300
+video_width = 300
 video = cv2.VideoCapture(camera_id)
 video.set(cv2.CAP_PROP_FRAME_HEIGHT, video_height)
 video.set(cv2.CAP_PROP_FRAME_WIDTH, video_width)
@@ -33,8 +33,8 @@ gestures_dict = {
     7: 'right'
 }
 
-filepath='py/communication.txt'
-exit_flag_path = 'py/exit_flag.txt'
+filepath='py/communication_files/communication.txt'
+exit_flag_path = 'py/communication_files/exit_flag.txt'
 def send_message_to_cpp(message, filepath):
     with open(filepath, 'w') as f:
         f.write(str(message))
@@ -142,7 +142,7 @@ while True:
         stable_gesture_time = 0
 
     # Mostrar el frame
-    #cv2.imshow("JARI Video Capture", frame)
+    #cv2.imshow("Camera Frame", frame)
 
     # Control de salida con 'q'
     if cv2.waitKey(1) & 0xFF == ord('q'):
