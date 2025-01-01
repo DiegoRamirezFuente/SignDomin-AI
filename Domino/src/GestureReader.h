@@ -4,7 +4,7 @@
 class GestureReader {
 private:
     int gesto; // Variable para almacenar el gesto reconocido
-    const string filepath = "py/communication.txt"; // Ruta al archivo de comunicación
+    const string filepath = "py/communication_files/communication.txt"; // Ruta al archivo de comunicación
     void clearFile(); // Método privado para limpiar el contenido del archivo
     bool isFileModified(); // Método privado para verificar si el archivo ha sido modificado
 public:

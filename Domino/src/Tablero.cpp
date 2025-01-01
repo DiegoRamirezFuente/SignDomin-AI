@@ -55,7 +55,7 @@ void Tablero::partida(int dificultad) {
 				else if (eleccion == 2)
 					cambio_turno();
 
-				archivo.open("py/Jugador.txt", ios::out); //sobreescribe los datos que esten en el archivo
+				archivo.open("py/communication_files/Jugador.txt", ios::out); //sobreescribe los datos que esten en el archivo
 				if (archivo.is_open()) {
 					for (int j = 0; j <= 16; j++) { //se escriben 16 numeros en el archivo
 						archivo << escribir[j];
@@ -82,7 +82,7 @@ void Tablero::partida(int dificultad) {
 					escribir[3 + (2 * i)] = jugadores[turno].get_ficha(i).get_num2();
 				}
 
-				archivo.open("py/info.txt", ios::out); // Sobre escribe los datos que esten en el archivo
+				archivo.open("py/communication_files/info.txt", ios::out); // Sobre escribe los datos que esten en el archivo
 				if (archivo.is_open()) {
 					for (int j = 0; j <= 15; j++) { // Se escriben 16 numeros en el archivo
 						archivo << escribir[j];

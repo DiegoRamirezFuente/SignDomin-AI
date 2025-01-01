@@ -23,10 +23,10 @@ void control_juego() {
 }
 
 int main(int argc, char* argv[]){
-	/*
-	HWND hwnd = GetConsoleWindow(); // Obtén el manejador de la ventana de consola
-    ShowWindow(hwnd, SW_HIDE);     // Oculta la ventana
-	*/
+	
+	//HWND hwnd = GetConsoleWindow(); // Obtén el manejador de la ventana de consola
+	//ShowWindow(hwnd, SW_HIDE);     // Oculta la ventana
+	
 	thread py(runPython);
 	
 	// Antes de comenzar con el desarrollo del juego, inicializamos el gestor de ventanas GLUT y creamos la ventana

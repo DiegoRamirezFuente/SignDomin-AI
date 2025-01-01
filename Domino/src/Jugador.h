@@ -17,7 +17,7 @@ private:
 	int numero;
 	int pos = 0;
 	int lugar = 0;
-	const string filepath = "py/resultado.txt"; // Archivos donde se guardan las elecciones de la IA de cara a poner o no ficha
+	const string filepath = "py/communication_files/resultado.txt"; // Archivos donde se guardan las elecciones de la IA de cara a poner o no ficha
 	void clearFile();
 	bool isFileModified();
 public:

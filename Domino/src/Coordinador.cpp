@@ -12,7 +12,7 @@ Coordinador::Coordinador() {
 Coordinador::~Coordinador() {}
 
 void Coordinador::escribirExitFlag() {
-	std::ofstream archivo("py/exit_flag.txt", std::ios::out | std::ios::trunc);
+	std::ofstream archivo("py/communication_files/exit_flag.txt", std::ios::out | std::ios::trunc);
 	if (archivo.is_open()) {
 		if (estado == JUEGO) {
 			archivo << "1";
@@ -195,9 +195,9 @@ void Coordinador::dibuja_Menu() {
 }
 
 void Coordinador::runANN() {
-	system("python \"../Domino/py/ANN_bot.py\"");
+	system("python \"../Domino/py/domino_bot.py\"");
 }
 
 void Coordinador::runQlearning() {
-	system("python \"../Domino/py/Qlearning4.0.py\"");
+	system("python \"../Domino/py/q_learning.py\"");
 }
